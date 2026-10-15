@@ -17,7 +17,7 @@ import HTML from "./index.html";
 const ADMIN_USUARIO = "Torre2026";
 const ADMIN_HASH = "26247fb9aee567ff3cac049b0fee2a5e8df1dc8d3c15e5078c665193ace7b4cb";
 
-const CAMPOS_TEXTO = ["embarque", "referencia", "almacenadora", "bodega", "fechaDocs", "fechaRetiro", "fechaDescarga", "fechaEstado", "creado", "actualizado"];
+const CAMPOS_TEXTO = ["embarque", "referencia", "almacenadora", "bodega", "responsable", "fechaDocs", "fechaRetiro", "fechaDescarga", "fechaEstado", "creado", "actualizado"];
 const ESTADOS = ["pendiente", "retirada", "inconveniente"];
 
 // Valida y aplica el estado de la carga (pendiente / retirada / inconveniente) sobre un registro

@@ -142,7 +142,8 @@ tr.total td{font-weight:700;background:var(--panel-2)}
 .st.q{border-color:#F0C98A;color:#8A5300}
 .st.q::before{border-color:#E8A33D}
 .st.q:hover{background:#FFF4E0;color:#8A5300;border-color:#E8A33D}
-.stc{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.stc{display:flex;gap:6px;flex-wrap:nowrap;align-items:center}
+.rcard .stc{flex-wrap:wrap}
 .obs{display:block;font-size:11px;color:#8A5300;margin-top:4px;max-width:280px;white-space:normal;line-height:1.35}
 tbody tr.w td{background:#FFF8EC}
 tbody tr.w td:first-child{box-shadow:inset 3px 0 0 #E8A33D}
@@ -161,6 +162,57 @@ textarea:focus{border-color:var(--red);outline:none;box-shadow:0 0 0 3px var(--r
 .opt.on.r{border-color:var(--ok);background:var(--ok-soft)}
 .opt.on.w{border-color:#E8A33D;background:#FFF8EC}
 .kpi.amb b{color:#C27C12}
+
+/* Panel por responsable */
+.rwrap{margin-bottom:14px}
+.rhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:0 2px 8px}
+.rhead h2{margin:0;font-size:13.5px;font-weight:700}
+.rhead small{color:var(--muted);font-size:11.5px}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
+.rp{padding:12px 14px;display:flex;flex-direction:column;gap:9px;border:1.5px solid transparent;cursor:pointer;text-align:left;font:inherit;color:inherit;transition:border-color .15s}
+.rp:hover{border-color:#F0B7C0}
+.rp.on{border-color:var(--red)}
+.rp-h{display:flex;align-items:center;gap:10px}
+.rp-av{width:32px;height:32px;border-radius:50%;background:var(--red);color:#fff;font-weight:700;font-size:12px;display:grid;place-items:center;flex:none}
+.rp-av.none{background:#B8BCC2}
+.rp-h b{font-size:13px;display:block}
+.rp-h small{display:block;color:var(--muted);font-size:11.5px}
+.rp-n{margin-left:auto;text-align:right}
+.rp-n b{font-size:22px;line-height:1;display:block;font-weight:700}
+.rp-n small{font-size:10.5px;color:var(--muted)}
+.rp-p{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted)}
+.rp-p .prog{flex:1}
+.rp-u{display:flex;flex-direction:column;gap:7px;border-top:1px solid var(--line);padding-top:9px}
+.rp-u>div{display:flex;gap:5px;align-items:center;flex-wrap:wrap;font-size:11px}
+.rp-u .when{color:var(--muted);margin-right:2px}
+.cref{background:var(--panel-2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-weight:600;font-size:11px}
+.cref.d{background:var(--ok-soft);border-color:var(--ok-line);color:var(--ok-dk)}
+.cref.w{background:#FFF4E0;border-color:#F0C98A;color:#8A5300}
+
+/* Registros agrupados por responsable */
+.lbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 2px 10px}
+.lbar h2{margin:0;font-size:14px;font-weight:700;margin-right:auto}
+.lbar h2 span{color:var(--muted);font-weight:500}
+.grp{margin-bottom:12px;overflow:hidden}
+.grp-h{width:100%;appearance:none;border:0;background:var(--panel);display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;text-align:left;font:inherit;color:inherit;flex-wrap:wrap}
+.grp-h:hover{background:#FCFCFD}
+.grp-h .chev{transition:transform .2s;color:var(--muted);flex:none}
+.grp.closed .chev{transform:rotate(-90deg)}
+.grp.closed .grp-b{display:none}
+.grp-b{border-top:1px solid var(--line)}
+.grp-t{display:flex;align-items:center;gap:10px;min-width:200px}
+.grp-t b{display:block;font-size:13.5px}
+.grp-t small{display:block;color:var(--muted);font-size:11.5px}
+.grp-units{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.grp-units .tag em{font-style:normal;font-weight:500;opacity:.8;margin-left:3px}
+.grp-prog{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);white-space:nowrap}
+.grp-prog .prog{width:80px}
+@media (max-width:760px){.grp-units{flex-basis:100%;order:3}.grp-prog{margin-left:auto}}
+.grp table{table-layout:fixed;min-width:980px}
+.grp th:nth-child(1){width:44px}.grp th:nth-child(2){width:9%}.grp th:nth-child(3){width:9%}
+.grp th:nth-child(4){width:21%}.grp th:nth-child(5){width:9%}.grp th:nth-child(6){width:9%}
+.grp th:nth-child(7){width:8%}.grp th:nth-child(8){width:11%}.grp th:nth-child(9){width:24%}.grp th:nth-child(10){width:72px}
+.grp td{word-break:break-word}
 
 /* Stats */
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}
@@ -314,6 +366,7 @@ table.ct .pct .prog{width:28px}
         <label class="fl">Referencia<input type="search" id="f-ref" placeholder="Referencia"></label>
         <label class="fl">Almacenadora<input type="search" id="f-alm" placeholder="Almacenadora" list="dl-alm"></label>
         <label class="fl">Bodega<input type="search" id="f-bod" placeholder="Bodega" list="dl-bod"></label>
+        <label class="fl">Responsable<select id="f-resp"></select></label>
         <label class="fl">Retiro desde<input type="date" id="f-desde"></label>
         <label class="fl">Hasta<input type="date" id="f-hasta"></label>
         <label class="fl">Estado<select id="f-est"><option value="all">Todos</option><option value="p">Pendientes</option><option value="r">Carga retirada</option><option value="w">Con inconveniente</option></select></label>
@@ -332,19 +385,18 @@ table.ct .pct .prog{width:28px}
       <button class="btn sm green" id="btn-markd" type="button">✓ Carga retirada</button>
       <button class="btn sm amber" id="btn-marki" type="button">! Inconveniente</button>
       <button class="btn sm admin-only" id="btn-assign" type="button">Asignar transporte</button>
+      <button class="btn sm admin-only" id="btn-aresp" type="button">Asignar responsable</button>
       <button class="btn sm plain" id="btn-markp" type="button">Marcar pendientes</button>
       <button class="btn sm plain" id="btn-unsel" type="button">Quitar selección</button>
     </div>
 
-    <div class="card">
-      <div class="lhead">
-        <h2>Registros <span id="count"></span></h2>
-        <div class="legend"><span><i class="sw d"></i>Carga retirada</span><span><i class="sw w"></i>Inconveniente</span><span><i class="sw"></i>Pendiente</span></div>
-        <button class="btn admin-only" id="btn-new" type="button">+ Nuevo registro</button>
-      </div>
-      <div class="tbl-wrap records"><table id="tbl"></table></div>
-      <div class="cards" id="cards"></div>
+    <div class="lbar">
+      <h2>Registros <span id="count"></span></h2>
+      <div class="legend"><span><i class="sw d"></i>Carga retirada</span><span><i class="sw w"></i>Inconveniente</span><span><i class="sw"></i>Pendiente</span></div>
+      <button class="btn plain sm" id="btn-expand" type="button">Contraer todo</button>
+      <button class="btn admin-only" id="btn-new" type="button">+ Nuevo registro</button>
     </div>
+    <div id="groups"></div>
   </section>
 
   <section id="v-est" class="hidden">
@@ -391,8 +443,24 @@ table.ct .pct .prog{width:28px}
   var view = "reg", sortKey = "fechaRetiro", sortDir = -1, qRange = "all";
   var ses = null, busy = 0, pollTimer = null;
   var API = "/api/registros", SES_KEY = "cr_sesion";
-  var F = { emb:"", ref:"", alm:"", bod:"", desde:"", hasta:"", todas:false, estado:"all" };
+  var F = { emb:"", ref:"", alm:"", bod:"", resp:"", desde:"", hasta:"", todas:false, estado:"all" };
   var ROL = { admin:"Administrador", transportista:"Transportista" };
+  // Responsables disponibles al crear o editar un registro (agrega o quita nombres aquí)
+  var RESPONSABLES = ["Joel Cruz", "Pablo Escobar"];
+  var SIN_RESP = "__none__";
+  function respNombres(){
+    var lista = RESPONSABLES.slice();
+    regs.forEach(function(r){ if(r.responsable && lista.indexOf(r.responsable) < 0) lista.push(r.responsable); });
+    return lista;
+  }
+  function respOptions(cur, todos){
+    var lista = respNombres();
+    if(cur && cur !== SIN_RESP && lista.indexOf(cur) < 0) lista.push(cur);
+    return (todos ? '<option value="">Todos</option>' : '<option value="">Sin asignar</option>') +
+      lista.map(function(n){ return '<option value="'+esc(n)+'"'+(n===cur?" selected":"")+'>'+esc(n)+'</option>'; }).join("") +
+      (todos ? '<option value="'+SIN_RESP+'"'+(cur===SIN_RESP?" selected":"")+'>Sin responsable</option>' : '');
+  }
+  function iniciales(n){ return n.split(/\s+/).filter(Boolean).slice(0,2).map(function(p){ return p[0].toUpperCase(); }).join(""); }
 
   var $ = function(id){ return document.getElementById(id); };
   function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
@@ -634,26 +702,26 @@ table.ct .pct .prog{width:28px}
     F.alm = $("f-alm").value.trim().toLowerCase();
     F.bod = $("f-bod").value.trim().toLowerCase();
     F.desde = $("f-desde").value; F.hasta = $("f-hasta").value;
-    F.todas = $("f-todas").checked; F.estado = $("f-est").value;
+    F.todas = $("f-todas").checked; F.estado = $("f-est").value; F.resp = $("f-resp").value;
     $("f-desde").disabled = F.todas; $("f-hasta").disabled = F.todas;
   }
   function resetFilters(silent){
     ["f-emb","f-ref","f-alm","f-bod"].forEach(function(id){ $(id).value = ""; });
     $("f-desde").value = today(); $("f-hasta").value = today();
-    $("f-todas").checked = false; $("f-est").value = "all";
+    $("f-todas").checked = false; $("f-est").value = "all"; $("f-resp").value = "";
     readFilters(); sel.clear();
     if(!silent) render();
   }
   function applyFilters(){ readFilters(); sel.clear(); render(); }
   function has(v, q){ return !q || (v||"").toLowerCase().indexOf(q) >= 0; }
-  function baseFiltered(){
+  function baseFiltered(noResp){
     return regs.filter(function(r){
       if(!F.todas){
         if((F.desde || F.hasta) && !r.fechaRetiro) return false;
         if(F.desde && r.fechaRetiro < F.desde) return false;
         if(F.hasta && r.fechaRetiro > F.hasta) return false;
       }
-      return has(r.embarque,F.emb) && has(r.referencia,F.ref) && has(r.almacenadora,F.alm) && has(r.bodega,F.bod);
+      return has(r.embarque,F.emb) && has(r.referencia,F.ref) && has(r.almacenadora,F.alm) && has(r.bodega,F.bod) && (noResp || !F.resp || (F.resp === SIN_RESP ? !r.responsable : r.responsable === F.resp));
     });
   }
   function filtered(){
@@ -684,37 +752,69 @@ table.ct .pct .prog{width:28px}
     if(dateOn) return '<strong>No hay referencias para '+(F.desde===F.hasta?"el "+esc(fmt(F.desde)):"estas fechas")+'</strong><button class="btn sm ghost" type="button" data-allfechas style="margin-top:10px">Ver todas las fechas</button>';
     return '<strong>Sin resultados</strong>Ajusta los filtros.';
   }
+  var collapsed = new Set();
+  function grupoDe(r){ return r.responsable || SIN_RESP; }
   function renderRecords(){
-    var rows = filtered(), admin = isAdmin();
+    var rows = filtered(), admin = isAdmin(), box = $("groups");
     $("count").textContent = "· " + rows.length;
-    var head = '<thead><tr><th><input type="checkbox" class="chk" id="chk-all" aria-label="Seleccionar todo"></th>'+
-      thS("embarque","Embarque")+thS("referencia","Referencia")+thS("almacenadora","Almacenadora")+thS("fechaDocs","Entrega docs.")+
-      thS("fechaRetiro","Fecha retiro")+thS("bodega","Bodega")+thS("transporte","Transporte")+thS("estado","Estado de carga")+(admin?'<th></th>':'')+'</tr></thead>';
     if(!rows.length){
-      var msg = emptyMsg();
-      $("tbl").innerHTML = head + '<tbody><tr><td colspan="10"><div class="empty">'+msg+'</div></td></tr></tbody>';
-      $("cards").innerHTML = '<div class="empty">'+msg+'</div>';
+      box.innerHTML = '<div class="card"><div class="empty">'+emptyMsg()+'</div></div>';
+      $("btn-expand").classList.add("hidden");
     } else {
+      var grupos = {};
+      rows.forEach(function(r){ (grupos[grupoDe(r)] = grupos[grupoDe(r)] || []).push(r); });
+      var orden = respNombres().filter(function(n){ return grupos[n]; });
+      if(grupos[SIN_RESP]) orden.push(SIN_RESP);
+      var multiDia = new Set(rows.map(function(r){ return r.fechaRetiro || ""; })).size > 1;
       var acts = function(r){ return admin ? '<button class="icon-btn" data-edit="'+esc(r.id)+'" title="Editar" aria-label="Editar">✎</button><button class="icon-btn del" data-del="'+esc(r.id)+'" title="Eliminar" aria-label="Eliminar">✕</button>' : ''; };
-      $("tbl").innerHTML = head + '<tbody>' + rows.map(function(r){
-        var e0 = estadoDe(r), cls = (e0==="retirada"?"d":e0==="inconveniente"?"w":"")+(flash.has(r.id)?" flash":"");
-        return '<tr class="'+cls+'"><td><input type="checkbox" class="chk" data-sel="'+esc(r.id)+'"'+(sel.has(r.id)?" checked":"")+' aria-label="Seleccionar '+esc(r.referencia)+'"></td>'+
-          '<td>'+esc(r.embarque||"—")+'</td><td class="ref">'+esc(r.referencia)+'</td><td>'+esc(r.almacenadora||"—")+'</td>'+
-          '<td>'+esc(fmt(r.fechaDocs))+'</td><td>'+esc(fmt(r.fechaRetiro))+'</td><td>'+esc(r.bodega||"—")+'</td><td>'+tagHtml(r)+'</td><td>'+stHtml(r)+'</td>'+
-          (admin?'<td style="white-space:nowrap">'+acts(r)+'</td>':'')+'</tr>';
-      }).join("") + '</tbody>';
-      $("cards").innerHTML = rows.map(function(r){
-        var e1 = estadoDe(r), cls = (e1==="retirada"?" d":e1==="inconveniente"?" w":"")+(flash.has(r.id)?" flash":"");
-        return '<div class="rcard'+cls+'"><input type="checkbox" class="chk" data-sel="'+esc(r.id)+'"'+(sel.has(r.id)?" checked":"")+' aria-label="Seleccionar">'+
-          '<div><div class="ref">'+esc(r.referencia)+'</div><div style="margin-top:2px">'+tagHtml(r)+'</div></div>'+
-          '<div class="acts">'+acts(r)+'</div>'+
-          '<div class="meta"><span>Embarque: <b>'+esc(r.embarque||"—")+'</b></span><span>Bodega: <b>'+esc(r.bodega||"—")+'</b></span>'+
-          '<span>Almacenadora: <b>'+esc(r.almacenadora||"—")+'</b></span><span>Retiro: <b>'+esc(fmt(r.fechaRetiro))+'</b></span>'+
-          '<span>Entrega docs.: <b>'+esc(fmt(r.fechaDocs))+'</b></span></div><div class="stw">'+stHtml(r)+'</div></div>';
+      box.innerHTML = orden.map(function(k){
+        var lista = grupos[k], nombre = k === SIN_RESP ? "Sin responsable" : k;
+        var unidades = {}, cam = new Set(), cont = new Set(), sinT = 0, ret = 0, inc = 0;
+        lista.forEach(function(r){
+          var e = estadoDe(r); if(e === "retirada") ret++; else if(e === "inconveniente") inc++;
+          var uk = unitKey(r);
+          if(uk){ (r.tipo === "camion" ? cam : cont).add(uk); (unidades[uk] = unidades[uk] || { tipo:r.tipo, n:r.unidad, f:r.fechaRetiro, c:0 }).c++; }
+          else sinT++;
+        });
+        var chips = Object.keys(unidades).sort().map(function(uk){
+          var u = unidades[uk];
+          return '<span class="tag '+(u.tipo==="camion"?"cam":"cont")+'">'+esc(unitLabel(u.tipo,u.n))+(multiDia?' · '+esc(fmtShort(u.f)):'')+'<em>('+u.c+' ref.)</em></span>';
+        }).join("") + (sinT ? '<span class="tag none">Sin transporte ('+sinT+')</span>' : '');
+        var p = Math.round(ret / lista.length * 100);
+        var sub = lista.length + (lista.length===1?" referencia":" referencias") + " · " + cam.size + (cam.size===1?" camión":" camiones") + " · " + cont.size + (cont.size===1?" contenedor":" contenedores");
+        var head = '<thead><tr><th><input type="checkbox" class="chk" data-chkall="'+esc(k)+'" aria-label="Seleccionar todas de '+esc(nombre)+'"'+(lista.every(function(r){ return sel.has(r.id); })?" checked":"")+'></th>'+
+          thS("embarque","Embarque")+thS("referencia","Referencia")+thS("almacenadora","Almacenadora")+thS("fechaDocs","Entrega docs.")+
+          thS("fechaRetiro","Fecha retiro")+thS("bodega","Bodega")+thS("transporte","Transporte")+thS("estado","Estado de carga")+(admin?'<th></th>':'')+'</tr></thead>';
+        var trs = lista.map(function(r){
+          var e0 = estadoDe(r), cls = (e0==="retirada"?"d":e0==="inconveniente"?"w":"")+(flash.has(r.id)?" flash":"");
+          return '<tr class="'+cls+'"><td><input type="checkbox" class="chk" data-sel="'+esc(r.id)+'"'+(sel.has(r.id)?" checked":"")+' aria-label="Seleccionar '+esc(r.referencia)+'"></td>'+
+            '<td>'+esc(r.embarque||"—")+'</td><td class="ref">'+esc(r.referencia)+'</td><td>'+esc(r.almacenadora||"—")+'</td>'+
+            '<td>'+esc(fmt(r.fechaDocs))+'</td><td>'+esc(fmt(r.fechaRetiro))+'</td><td>'+esc(r.bodega||"—")+'</td><td>'+tagHtml(r)+'</td><td>'+stHtml(r)+'</td>'+
+            (admin?'<td style="white-space:nowrap">'+acts(r)+'</td>':'')+'</tr>';
+        }).join("");
+        var cards = lista.map(function(r){
+          var e1 = estadoDe(r), cls = (e1==="retirada"?" d":e1==="inconveniente"?" w":"")+(flash.has(r.id)?" flash":"");
+          return '<div class="rcard'+cls+'"><input type="checkbox" class="chk" data-sel="'+esc(r.id)+'"'+(sel.has(r.id)?" checked":"")+' aria-label="Seleccionar">'+
+            '<div><div class="ref">'+esc(r.referencia)+'</div><div style="margin-top:2px">'+tagHtml(r)+'</div></div>'+
+            '<div class="acts">'+acts(r)+'</div>'+
+            '<div class="meta"><span>Embarque: <b>'+esc(r.embarque||"—")+'</b></span><span>Bodega: <b>'+esc(r.bodega||"—")+'</b></span>'+
+            '<span>Almacenadora: <b>'+esc(r.almacenadora||"—")+'</b></span><span>Retiro: <b>'+esc(fmt(r.fechaRetiro))+'</b></span>'+
+            '<span>Entrega docs.: <b>'+esc(fmt(r.fechaDocs))+'</b></span></div><div class="stw">'+stHtml(r)+'</div></div>';
+        }).join("");
+        return '<div class="card grp'+(collapsed.has(k)?" closed":"")+'">'+
+          '<button type="button" class="grp-h" data-tog="'+esc(k)+'" aria-expanded="'+(!collapsed.has(k))+'">'+
+            '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>'+
+            '<span class="grp-t"><span class="rp-av'+(k===SIN_RESP?" none":"")+'">'+esc(k===SIN_RESP?"?":iniciales(nombre))+'</span><span><b>'+esc(nombre)+'</b><small>'+esc(sub)+'</small></span></span>'+
+            '<span class="grp-units">'+chips+'</span>'+
+            '<span class="grp-prog"><span class="prog"><i style="width:'+p+'%"></i></span>'+ret+'/'+lista.length+' retiradas'+(inc?' · <b style="color:#C27C12">'+inc+' inc.</b>':'')+'</span>'+
+          '</button>'+
+          '<div class="grp-b"><div class="tbl-wrap records"><table>'+head+'<tbody>'+trs+'</tbody></table></div><div class="cards">'+cards+'</div></div>'+
+        '</div>';
       }).join("");
+      var b = $("btn-expand"); b.classList.remove("hidden");
+      b.textContent = orden.every(function(k){ return collapsed.has(k); }) ? "Expandir todo" : "Contraer todo";
+      b.dataset.keys = JSON.stringify(orden);
     }
-    var all = $("chk-all");
-    if(all) all.checked = rows.length>0 && rows.every(function(r){ return sel.has(r.id); });
     sel.forEach(function(id){ if(!regs.some(function(r){ return r.id===id; })) sel.delete(id); });
     $("selbar").classList.toggle("hidden", sel.size===0);
     $("selcount").textContent = sel.size + (sel.size===1 ? " seleccionada" : " seleccionadas");
@@ -723,6 +823,30 @@ table.ct .pct .prog{width:28px}
     function uniq(k){ return Array.from(new Set(regs.map(function(r){ return (r[k]||"").trim(); }).filter(Boolean))).sort(); }
     $("dl-alm").innerHTML = uniq("almacenadora").map(function(v){ return '<option value="'+esc(v)+'">'; }).join("");
     $("dl-bod").innerHTML = uniq("bodega").map(function(v){ return '<option value="'+esc(v)+'">'; }).join("");
+    $("f-resp").innerHTML = respOptions(F.resp, true);
+  }
+
+  function openAssignResp(){
+    if(!isAdmin()) return;
+    var chosen = regs.filter(function(r){ return sel.has(r.id); });
+    if(!chosen.length) return;
+    openModal("Asignar responsable",
+      '<p class="hint full"><b>'+chosen.length+'</b> referencia(s): '+chosen.map(function(r){ return esc(r.referencia); }).join(", ")+'</p>'+
+      '<label class="fl full">Responsable<select id="ar-sel">'+respOptions("", false)+'</select></label>',
+      '<button class="btn plain" id="ar-no" type="button">Cancelar</button><button class="btn" id="ar-ok" type="button">Asignar</button>');
+    var s0 = $("ar-sel"); if(s0.options.length > 1) s0.selectedIndex = 1;
+    $("ar-no").onclick = closeModal;
+    $("ar-ok").onclick = async function(){
+      var v = $("ar-sel").value; this.disabled = true;
+      try{
+        for(var i=0;i<chosen.length;i++){
+          var r = chosen[i], b = bodyOf(r); b.responsable = v; b.actualizado = new Date().toISOString();
+          flash.add(r.id); await put(r.id, b);
+        }
+      }catch(e){ return; }
+      sel.clear(); closeModal(); render(); setTimeout(function(){ flash.clear(); }, 950);
+      toast(v ? chosen.length+" referencia(s) asignada(s) a "+v : "Responsable quitado");
+    };
   }
 
   /* ---------- Estadísticas ---------- */
@@ -820,6 +944,7 @@ table.ct .pct .prog{width:28px}
       '<label class="fl">Referencia *<input type="text" id="m-ref" value="'+esc(r.referencia)+'" required></label>'+
       '<label class="fl">Almacenadora<input type="text" id="m-alm" list="dl-alm" value="'+esc(r.almacenadora)+'"></label>'+
       '<label class="fl">Bodega<input type="text" id="m-bod" list="dl-bod" value="'+esc(r.bodega)+'"></label>'+
+      '<label class="fl full">Responsable<select id="m-resp">'+respOptions(r.responsable||"")+'</select></label>'+
       '<label class="fl">Fecha entrega de documentación<input type="date" id="m-fdoc" value="'+esc(r.fechaDocs)+'"></label>'+
       '<label class="fl">Fecha de retiro<input type="date" id="m-fret" value="'+esc(defFecha)+'"></label>'+
       '<fieldset class="fieldset"><legend>Transporte</legend>'+
@@ -867,7 +992,7 @@ table.ct .pct .prog{width:28px}
       if(est === "inconveniente" && !obs){ err.textContent="Describe el inconveniente en la observación."; err.classList.remove("hidden"); $("m-obs").focus(); return; }
       var fes = est === "pendiente" ? "" : ($("m-fes").value || today());
       var body = {
-        embarque:$("m-emb").value.trim(), referencia:ref, almacenadora:$("m-alm").value.trim(), bodega:$("m-bod").value.trim(),
+        embarque:$("m-emb").value.trim(), referencia:ref, almacenadora:$("m-alm").value.trim(), bodega:$("m-bod").value.trim(), responsable:$("m-resp").value,
         fechaDocs:$("m-fdoc").value||"", fechaRetiro:fret||"", tipo:tipo||null, unidad:unidad,
         estado:est, observacion:obs, fechaEstado:fes, descargado: est === "retirada", fechaDescarga: est === "retirada" ? fes : "",
         creado:(rec && rec.creado) || new Date().toISOString(), actualizado:new Date().toISOString()
@@ -936,9 +1061,9 @@ table.ct .pct .prog{width:28px}
     }
     block("Por fecha de retiro", s.fecha, true); block("Por almacenadora", s.alm, false); block("Por bodega", s.bod, false);
     lines.push("Detalle de referencias");
-    lines.push(["Embarque","Referencia","Almacenadora","Fecha entrega documentación","Fecha retiro","Bodega","Transporte","Estado","Fecha del estado","Observación"].join(","));
+    lines.push(["Embarque","Referencia","Almacenadora","Fecha entrega documentación","Fecha retiro","Bodega","Responsable","Transporte","Estado","Fecha del estado","Observación"].join(","));
     statsRows().forEach(function(r){
-      lines.push([r.embarque,r.referencia,r.almacenadora,fmt(r.fechaDocs),fmt(r.fechaRetiro),r.bodega,(r.tipo&&r.unidad)?unitLabel(r.tipo,r.unidad):"Sin asignar",EST[estadoDe(r)],fechaEst(r)?fmt(fechaEst(r)):"",r.observacion||""].map(csvCell).join(","));
+      lines.push([r.embarque,r.referencia,r.almacenadora,fmt(r.fechaDocs),fmt(r.fechaRetiro),r.bodega,r.responsable||"",(r.tipo&&r.unidad)?unitLabel(r.tipo,r.unidad):"Sin asignar",EST[estadoDe(r)],fechaEst(r)?fmt(fechaEst(r)):"",r.observacion||""].map(csvCell).join(","));
     });
     var blob = new Blob(["\ufeff"+lines.join("\n")], {type:"text/csv"});
     var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "estadisticas-retiros.csv";
@@ -960,12 +1085,18 @@ table.ct .pct .prog{width:28px}
   $("f-go").onclick = applyFilters;
   $("f-reset").onclick = function(){ resetFilters(false); };
   ["f-emb","f-ref","f-alm","f-bod"].forEach(function(id){ $(id).addEventListener("keydown", function(e){ if(e.key==="Enter") applyFilters(); }); });
-  ["f-desde","f-hasta","f-est","f-todas"].forEach(function(id){ $(id).addEventListener("change", function(){
+  ["f-desde","f-hasta","f-est","f-todas","f-resp"].forEach(function(id){ $(id).addEventListener("change", function(){
     if(id==="f-desde" && $("f-desde").value && (!$("f-hasta").value || $("f-hasta").value < $("f-desde").value)) $("f-hasta").value = $("f-desde").value;
     if(id==="f-hasta" && $("f-hasta").value && $("f-desde").value > $("f-hasta").value) $("f-desde").value = $("f-hasta").value;
     applyFilters();
   }); });
   $("btn-assign").onclick = openAssign;
+  $("btn-aresp").onclick = openAssignResp;
+  $("btn-expand").onclick = function(){
+    var keys = JSON.parse(this.dataset.keys || "[]"), allClosed = keys.every(function(k){ return collapsed.has(k); });
+    keys.forEach(function(k){ if(allClosed) collapsed.delete(k); else collapsed.add(k); });
+    renderRecords();
+  };
   $("btn-markd").onclick = function(){ var ids=Array.from(sel); sel.clear(); setEstado(ids, "retirada"); render(); };
   $("btn-marki").onclick = function(){ openEstado(Array.from(sel), "inconveniente"); };
   $("btn-markp").onclick = function(){ var ids=Array.from(sel); sel.clear(); setEstado(ids, "pendiente", ""); render(); };
@@ -976,7 +1107,9 @@ table.ct .pct .prog{width:28px}
 
   $("v-reg").addEventListener("click", function(e){
     var t = e.target;
-    if(t.id==="chk-all"){ filtered().forEach(function(r){ if(t.checked) sel.add(r.id); else sel.delete(r.id); }); renderRecords(); return; }
+    if(t.dataset && t.dataset.chkall !== undefined){ var g = t.dataset.chkall; filtered().forEach(function(r){ if(grupoDe(r) !== g) return; if(t.checked) sel.add(r.id); else sel.delete(r.id); }); renderRecords(); return; }
+    var tg = t.closest && t.closest("[data-tog]");
+    if(tg){ var key = tg.dataset.tog; if(collapsed.has(key)) collapsed.delete(key); else collapsed.add(key); renderRecords(); return; }
     var s = t.getAttribute && t.getAttribute("data-sel");
     if(s){ if(t.checked) sel.add(s); else sel.delete(s); renderRecords(); return; }
     var b = t.closest && t.closest("[data-edit],[data-del],[data-ret],[data-inc],[data-est],[data-allfechas],th[data-sort]");
@@ -1001,7 +1134,7 @@ table.ct .pct .prog{width:28px}
       render(); return;
     }
     ["f-emb","f-ref","f-alm","f-bod"].forEach(function(id){ $(id).value = ""; });
-    $("f-est").value = "all";
+    $("f-est").value = "all"; $("f-resp").value = "";
     if(b.dataset.gotoFecha){ $("f-desde").value = b.dataset.gotoFecha; $("f-hasta").value = b.dataset.gotoFecha; $("f-todas").checked = false; }
     else {
       if(b.dataset.gotoAlm) $("f-alm").value = b.dataset.gotoAlm;
@@ -1028,6 +1161,7 @@ table.ct .pct .prog{width:28px}
   window.addEventListener("scroll", hideTip, {passive:true});
 
   /* ---------- Inicio ---------- */
+  $("f-resp").innerHTML = respOptions("", true);
   loadSes();
   if(ses){
     $("l-nom").value = ses.nombre;

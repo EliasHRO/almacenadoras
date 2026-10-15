@@ -27,6 +27,11 @@ Para cambiarla, reemplaza ADMIN_HASH por la huella de la nueva contraseña.
 
 Cada registro guarda quién hizo el último cambio (usuario administrador o "Transportista").
 
+## Responsables
+La lista de responsables está al inicio del script en `index.html`:
+`var RESPONSABLES = ["Joel Cruz", "Pablo Escobar"];`
+Para agregar o quitar nombres, edita esa línea y haz commit.
+
 ## Publicación
 Cloudflare → Workers & Pages → control-retiros, conectado a este repositorio.
 - Comando de compilación: (vacío)
