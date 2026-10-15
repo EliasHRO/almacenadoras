@@ -5,7 +5,7 @@ import HTML from "./index.html";
 // GET    /                     -> la página
 // GET    /api/sesion           -> valida la clave y devuelve el rol
 // GET    /api/registros        -> lista todos los registros (admin y transportista)
-// PUT    /api/registros/:id    -> admin: crea/edita todo · transportista: solo el estado de descarga
+// PUT    /api/registros/:id    -> admin: crea/edita todo · transportista: solo el estado de la carga
 // DELETE /api/registros/:id    -> solo admin
 //
 // Quien abre la página sin clave entra como TRANSPORTISTA (ver todo + marcar descarga).
@@ -17,7 +17,33 @@ import HTML from "./index.html";
 const ADMIN_USUARIO = "Torre2026";
 const ADMIN_HASH = "26247fb9aee567ff3cac049b0fee2a5e8df1dc8d3c15e5078c665193ace7b4cb";
 
-const CAMPOS_TEXTO = ["embarque", "referencia", "almacenadora", "bodega", "fechaDocs", "fechaRetiro", "fechaDescarga", "creado", "actualizado"];
+const CAMPOS_TEXTO = ["embarque", "referencia", "almacenadora", "bodega", "fechaDocs", "fechaRetiro", "fechaDescarga", "fechaEstado", "creado", "actualizado"];
+const ESTADOS = ["pendiente", "retirada", "inconveniente"];
+
+// Valida y aplica el estado de la carga (pendiente / retirada / inconveniente) sobre un registro
+function aplicarEstado(destino, body) {
+  const estado = ESTADOS.includes(body.estado) ? body.estado : (body.descargado === true ? "retirada" : "pendiente");
+  const obs = typeof body.observacion === "string" ? body.observacion.trim().slice(0, 500) : "";
+  if (estado === "inconveniente" && !obs) return "Describe el inconveniente en la observación";
+  const fecha = typeof body.fechaEstado === "string" && FECHA.test(body.fechaEstado) ? body.fechaEstado
+    : (typeof body.fechaDescarga === "string" && FECHA.test(body.fechaDescarga) ? body.fechaDescarga : new Date().toISOString().slice(0, 10));
+  destino.estado = estado;
+  destino.observacion = obs;
+  destino.fechaEstado = estado === "pendiente" ? "" : fecha;
+  destino.descargado = estado === "retirada";          // compatibilidad con registros anteriores
+  destino.fechaDescarga = destino.descargado ? destino.fechaEstado : "";
+  return null;
+}
+
+// Registros antiguos (solo "descargado") se muestran con el nuevo estado
+function normalizar(reg) {
+  if (!ESTADOS.includes(reg.estado)) {
+    reg.estado = reg.descargado ? "retirada" : "pendiente";
+    reg.fechaEstado = reg.descargado ? (reg.fechaDescarga || "") : "";
+    reg.observacion = reg.observacion || "";
+  }
+  return reg;
+}
 const FECHA = /^\d{4}-\d{2}-\d{2}$/;
 const ID = /^[A-Za-z0-9_-]{1,64}$/;
 
@@ -68,8 +94,6 @@ function limpiar(body) {
   out.tipo = body.tipo === "camion" || body.tipo === "contenedor" ? body.tipo : null;
   const n = Number(body.unidad);
   out.unidad = out.tipo && Number.isInteger(n) && n > 0 && n < 1000 ? n : null;
-  out.descargado = body.descargado === true;
-  if (!out.descargado) out.fechaDescarga = "";
   return out;
 }
 
@@ -106,7 +130,7 @@ export default {
     try {
       if (request.method === "GET" && !id) {
         const { results } = await env.DB.prepare("SELECT id, data, modificado_por FROM registros").all();
-        return json(results.map((r) => ({ id: r.id, ...JSON.parse(r.data), modificadoPor: r.modificado_por || "" })));
+        return json(results.map((r) => ({ id: r.id, ...normalizar(JSON.parse(r.data)), modificadoPor: r.modificado_por || "" })));
       }
 
       if (request.method === "PUT" && id) {
@@ -116,14 +140,12 @@ export default {
         if (!body || typeof body !== "object") return json({ error: "Cuerpo inválido" }, 400);
 
         if (rol === "transportista") {
-          // El transportista solo puede cambiar el estado de descarga de un registro existente
+          // El transportista solo puede cambiar el estado de la carga (y su observación) de un registro existente
           const fila = await env.DB.prepare("SELECT data FROM registros WHERE id = ?1").bind(id).first();
           if (!fila) return json({ error: "Solo el administrador puede crear registros" }, 403);
           const actual = JSON.parse(fila.data);
-          actual.descargado = body.descargado === true;
-          actual.fechaDescarga = actual.descargado
-            ? (typeof body.fechaDescarga === "string" && FECHA.test(body.fechaDescarga) ? body.fechaDescarga : new Date().toISOString().slice(0, 10))
-            : "";
+          const error = aplicarEstado(actual, body);
+          if (error) return json({ error }, 400);
           actual.actualizado = new Date().toISOString();
           await guardar(env, id, actual, usuario);
           return json({ ok: true });
@@ -131,6 +153,8 @@ export default {
 
         const reg = limpiar(body);
         if (!reg.referencia) return json({ error: "La referencia es obligatoria" }, 400);
+        const errorEstado = aplicarEstado(reg, body);
+        if (errorEstado) return json({ error: errorEstado }, 400);
         if (reg.tipo && !reg.fechaRetiro) return json({ error: "Falta la fecha de retiro" }, 400);
         await guardar(env, id, reg, usuario);
         return json({ ok: true });

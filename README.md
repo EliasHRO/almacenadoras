@@ -13,8 +13,8 @@ Cloudflare Worker + base de datos D1 compartida (se actualiza cada 15 segundos).
 ## Roles
 | Rol | Puede |
 |---|---|
-| Administrador | Crear, editar y eliminar registros, asignar transporte, marcar descargas, ver estadísticas |
-| Transportista (cualquiera que abra la URL, sin login) | Ver registros y estadísticas, y marcar/desmarcar "Descargado en CD" |
+| Administrador | Crear, editar y eliminar registros, asignar transporte, cambiar el estado de la carga, ver estadísticas |
+| Transportista (cualquiera que abra la URL, sin login) | Ver registros y estadísticas, y cambiar el estado: Carga retirada o Inconveniente (con observación) |
 
 Los permisos se validan en el servidor: aunque alguien modifique la página, el transportista
 no puede crear, editar ni borrar.

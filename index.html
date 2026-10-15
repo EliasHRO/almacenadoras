@@ -136,8 +136,46 @@ tr.total td{font-weight:700;background:var(--panel-2)}
 .rcard .acts{display:flex}
 .rcard .chk{margin-top:2px}
 
+/* Estado: inconveniente */
+.st.w{background:#FFF4E0;border-color:#E8A33D;color:#8A5300}
+.st.w::before{content:"!";border:0;background:#E8A33D;color:#fff;font-size:9px;line-height:12px;text-align:center;font-weight:800}
+.st.q{border-color:#F0C98A;color:#8A5300}
+.st.q::before{border-color:#E8A33D}
+.st.q:hover{background:#FFF4E0;color:#8A5300;border-color:#E8A33D}
+.stc{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.obs{display:block;font-size:11px;color:#8A5300;margin-top:4px;max-width:280px;white-space:normal;line-height:1.35}
+tbody tr.w td{background:#FFF8EC}
+tbody tr.w td:first-child{box-shadow:inset 3px 0 0 #E8A33D}
+tbody tr.w:hover td{background:#FFF1DA}
+.rcard.w{background:#FFF8EC;box-shadow:inset 3px 0 0 #E8A33D}
+.sw.w{background:#FFF8EC;border-color:#F0C98A;box-shadow:inset 3px 0 0 #E8A33D}
+.btn.amber{background:#E8A33D;border-color:#E8A33D;color:#fff}
+.btn.amber:hover{background:#CF8B24;border-color:#CF8B24}
+textarea{border:1px solid var(--field);border-radius:8px;padding:8px 10px;width:100%;font:inherit;font-size:12.5px;min-height:78px;resize:vertical;background:var(--panel)}
+textarea:focus{border-color:var(--red);outline:none;box-shadow:0 0 0 3px var(--red-soft)}
+.opts{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.opt{position:relative;border:1.5px solid var(--field);border-radius:10px;padding:10px 12px;cursor:pointer;display:flex;flex-direction:column;gap:2px;font-weight:600;font-size:12.5px;background:var(--panel)}
+.opt small{font-weight:500;color:var(--muted);font-size:11px}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt.on.p{border-color:#8A919C;background:var(--panel-2)}
+.opt.on.r{border-color:var(--ok);background:var(--ok-soft)}
+.opt.on.w{border-color:#E8A33D;background:#FFF8EC}
+.kpi.amb b{color:#C27C12}
+
 /* Stats */
-.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}
+.grid3 .sect{margin-bottom:0}
+.st3 .sect-h{padding:10px 12px}
+.st3 .sect-h h2{font-size:12.5px}
+.st3 .sect-h small{font-size:11px;color:#C27C12;font-weight:600}
+table.ct{font-size:12px}
+table.ct th,table.ct td{padding:6px 8px}
+table.ct th:first-child,table.ct td:first-child{padding-left:12px}
+table.ct th:last-child,table.ct td:last-child{padding-right:12px}
+table.ct td:first-child{max-width:170px;word-break:break-word;line-height:1.3}
+table.ct .pct .prog{width:28px}
+@media (max-width:1100px){.grid3{grid-template-columns:1fr}}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:14px}
 .kpi{padding:12px 14px}
 .kpi b{display:block;font-size:22px;font-weight:700;line-height:1.15;letter-spacing:-.3px}
 .kpi span{color:var(--muted);font-size:11.5px}
@@ -216,6 +254,7 @@ tr.total td{font-weight:700;background:var(--panel-2)}
   .ov{align-items:flex-end;padding:0}
   .modal{border-radius:14px 14px 0 0;max-height:92%;padding-bottom:env(safe-area-inset-bottom,0px)}
   .modal .body,.fieldset{grid-template-columns:1fr}
+  .opts{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:no-preference){
   .flash td,.rcard.flash{animation:flash .9s ease-out}
@@ -277,7 +316,7 @@ tr.total td{font-weight:700;background:var(--panel-2)}
         <label class="fl">Bodega<input type="search" id="f-bod" placeholder="Bodega" list="dl-bod"></label>
         <label class="fl">Retiro desde<input type="date" id="f-desde"></label>
         <label class="fl">Hasta<input type="date" id="f-hasta"></label>
-        <label class="fl">Estado<select id="f-est"><option value="all">Todos</option><option value="p">Pendientes de descarga</option><option value="d">Descargados en CD</option></select></label>
+        <label class="fl">Estado<select id="f-est"><option value="all">Todos</option><option value="p">Pendientes</option><option value="r">Carga retirada</option><option value="w">Con inconveniente</option></select></label>
         <div class="fend">
           <label class="inl"><input type="checkbox" id="f-todas"> Todas las fechas</label>
           <div class="factions">
@@ -290,7 +329,8 @@ tr.total td{font-weight:700;background:var(--panel-2)}
 
     <div id="selbar" class="selbar hidden">
       <span id="selcount"></span>
-      <button class="btn sm green" id="btn-markd" type="button">✓ Marcar descargadas</button>
+      <button class="btn sm green" id="btn-markd" type="button">✓ Carga retirada</button>
+      <button class="btn sm amber" id="btn-marki" type="button">! Inconveniente</button>
       <button class="btn sm admin-only" id="btn-assign" type="button">Asignar transporte</button>
       <button class="btn sm plain" id="btn-markp" type="button">Marcar pendientes</button>
       <button class="btn sm plain" id="btn-unsel" type="button">Quitar selección</button>
@@ -299,7 +339,7 @@ tr.total td{font-weight:700;background:var(--panel-2)}
     <div class="card">
       <div class="lhead">
         <h2>Registros <span id="count"></span></h2>
-        <div class="legend"><span><i class="sw d"></i>Descargado en CD</span><span><i class="sw"></i>Pendiente</span></div>
+        <div class="legend"><span><i class="sw d"></i>Carga retirada</span><span><i class="sw w"></i>Inconveniente</span><span><i class="sw"></i>Pendiente</span></div>
         <button class="btn admin-only" id="btn-new" type="button">+ Nuevo registro</button>
       </div>
       <div class="tbl-wrap records"><table id="tbl"></table></div>
@@ -330,11 +370,12 @@ tr.total td{font-weight:700;background:var(--panel-2)}
       <div class="chart" id="chart"></div>
       <div class="ckey"><span><i style="background:var(--red)"></i>Camiones 8 ton</span><span><i style="background:var(--steel)"></i>Contenedores</span></div>
     </div>
-    <div class="card sect"><div class="sect-h"><h2>Por fecha de retiro</h2><small>Toca una fila para ver el detalle</small></div><div class="tbl-wrap"><table id="t-fecha"></table></div></div>
-    <div class="card sect"><div class="sect-h"><h2>Por almacenadora</h2></div><div class="tbl-wrap"><table id="t-alm"></table></div>
-      <p class="note">Una unidad que llevó referencias de varias almacenadoras cuenta una vez en cada una; por eso la suma puede superar el total general.</p></div>
-    <div class="card sect"><div class="sect-h"><h2>Por bodega</h2></div><div class="tbl-wrap"><table id="t-bod"></table></div>
-      <p class="note">Misma regla: una unidad compartida entre bodegas se cuenta en cada bodega que atendió.</p></div>
+    <div class="grid3">
+      <div class="card sect st3"><div class="sect-h"><h2>Por fecha de retiro</h2><small id="sin-tr"></small></div><div class="tbl-wrap"><table class="ct" id="t-fecha"></table></div></div>
+      <div class="card sect st3"><div class="sect-h"><h2>Por almacenadora</h2></div><div class="tbl-wrap"><table class="ct" id="t-alm"></table></div></div>
+      <div class="card sect st3"><div class="sect-h"><h2>Por bodega</h2></div><div class="tbl-wrap"><table class="ct" id="t-bod"></table></div></div>
+    </div>
+    <p class="note" style="padding:2px 4px 0">Ref. = referencias · Cam. = camiones 8 ton · Cont. = contenedores · Unid. = total de unidades · Retir. = carga retirada · Inc. = con inconveniente. Una unidad que llevó carga de varias almacenadoras o bodegas cuenta una vez en cada una. Toca una fila para ver sus registros.</p>
   </section>
 </main>
 </div>
@@ -368,10 +409,14 @@ tr.total td{font-weight:700;background:var(--panel-2)}
     if(!r.tipo || !r.unidad) return '<span class="tag none">Sin asignar</span>';
     return '<span class="tag '+(r.tipo==="camion"?"cam":"cont")+'">'+esc(unitLabel(r.tipo, r.unidad))+'</span>';
   }
+  var EST = { pendiente:"Pendiente", retirada:"Carga retirada", inconveniente:"Inconveniente" };
+  function estadoDe(r){ return r.estado === "retirada" || r.estado === "inconveniente" || r.estado === "pendiente" ? r.estado : (r.descargado ? "retirada" : "pendiente"); }
+  function fechaEst(r){ return r.fechaEstado || r.fechaDescarga || ""; }
   function stHtml(r){
-    return r.descargado
-      ? '<button class="st d" type="button" data-desc="'+esc(r.id)+'" title="Toca para marcar como pendiente">Descargado'+(r.fechaDescarga?' <small>'+esc(fmtShort(r.fechaDescarga))+'</small>':'')+'</button>'
-      : '<button class="st" type="button" data-desc="'+esc(r.id)+'" title="Toca para confirmar la descarga en CD">Confirmar descarga</button>';
+    var e = estadoDe(r), f = fechaEst(r), id = esc(r.id);
+    if(e === "retirada") return '<button class="st d" type="button" data-est="'+id+'" title="Cambiar estado">Carga retirada'+(f?' <small>'+esc(fmtShort(f))+'</small>':'')+'</button>'+(r.observacion?'<span class="obs" style="color:var(--muted)">'+esc(r.observacion)+'</span>':'');
+    if(e === "inconveniente") return '<button class="st w" type="button" data-est="'+id+'" title="Ver o cambiar el inconveniente">Inconveniente'+(f?' <small>'+esc(fmtShort(f))+'</small>':'')+'</button>'+(r.observacion?'<span class="obs">'+esc(r.observacion)+'</span>':'');
+    return '<div class="stc"><button class="st" type="button" data-ret="'+id+'" title="Marcar la carga como retirada">Carga retirada</button><button class="st q" type="button" data-inc="'+id+'" title="Reportar un inconveniente">Inconveniente</button></div>';
   }
   var toastTimer;
   function toast(msg, undo){
@@ -494,31 +539,74 @@ tr.total td{font-weight:700;background:var(--panel-2)}
     });
   }
 
-  async function setDescargado(ids, val){
+  function applyEstado(b, r, estado, obs){
+    var antes = estadoDe(r);
+    b.estado = estado;
+    b.observacion = obs === undefined ? (r.observacion || "") : obs;
+    b.fechaEstado = estado === "pendiente" ? "" : (antes === estado && fechaEst(r) ? fechaEst(r) : today());
+    b.descargado = estado === "retirada";
+    b.fechaDescarga = b.descargado ? b.fechaEstado : "";
+    b.actualizado = new Date().toISOString();
+    return b;
+  }
+  async function setEstado(ids, estado, obs){
     var prev = [];
-    ids.forEach(function(id){ var r = regs.find(function(x){ return x.id===id; }); if(r) prev.push({id:id, d:!!r.descargado, f:r.fechaDescarga||""}); });
-    var targets = prev.filter(function(p){ return p.d !== val; });
+    ids.forEach(function(id){ var r = regs.find(function(x){ return x.id===id; }); if(r) prev.push({ id:id, e:estadoDe(r), o:r.observacion||"", f:fechaEst(r) }); });
+    var targets = prev.filter(function(p){ return p.e !== estado || (obs !== undefined && p.o !== obs); });
     if(!targets.length) return;
     targets.forEach(function(p){ flash.add(p.id); });
     try{
       for(var i=0;i<targets.length;i++){
         var r = regs.find(function(x){ return x.id===targets[i].id; }); if(!r) continue;
-        var b = bodyOf(r); b.descargado = val; b.fechaDescarga = val ? (r.fechaDescarga || today()) : ""; b.actualizado = new Date().toISOString();
-        await put(r.id, b);
+        await put(r.id, applyEstado(bodyOf(r), r, estado, obs));
       }
     }catch(e){ return; }
     setTimeout(function(){ flash.clear(); }, 950);
-    var n = targets.length;
-    toast((n===1 ? "Referencia " : n+" referencias ") + (val ? (n>1?"confirmadas":"confirmada")+" como descargada"+(n>1?"s":"") : "marcada"+(n>1?"s":"")+" como pendiente"+(n>1?"s":"")),
-      function(){
-        (async function(){
-          for(var i=0;i<targets.length;i++){
-            var r = regs.find(function(x){ return x.id===targets[i].id; }); if(!r) continue;
-            var b = bodyOf(r); b.descargado = targets[i].d; b.fechaDescarga = targets[i].f; b.actualizado = new Date().toISOString();
-            try{ await put(r.id, b); }catch(e){ return; }
-          }
-        })();
-      });
+    var n = targets.length, que = n===1 ? "Referencia" : n+" referencias";
+    var msg = estado==="retirada" ? que+": carga retirada" : estado==="inconveniente" ? que+": inconveniente registrado" : que+": marcada como pendiente";
+    toast(msg, function(){
+      (async function(){
+        for(var i=0;i<targets.length;i++){
+          var r = regs.find(function(x){ return x.id===targets[i].id; }); if(!r) continue;
+          var b = applyEstado(bodyOf(r), r, targets[i].e, targets[i].o);
+          b.fechaEstado = targets[i].f; b.fechaDescarga = b.descargado ? targets[i].f : "";
+          try{ await put(r.id, b); }catch(e){ return; }
+        }
+      })();
+    });
+  }
+
+  function openEstado(ids, preset){
+    var chosen = regs.filter(function(r){ return ids.indexOf(r.id) >= 0; });
+    if(!chosen.length) return;
+    var one = chosen.length === 1 ? chosen[0] : null;
+    var cur = preset || (one ? estadoDe(one) : "retirada");
+    var obs0 = one ? (one.observacion || "") : "";
+    function opt(v, cls, t, sub){ return '<label class="opt '+cls+(cur===v?' on':'')+'"><input type="radio" name="e-est" value="'+v+'"'+(cur===v?' checked':'')+'>'+t+'<small>'+sub+'</small></label>'; }
+    openModal("Estado de la carga",
+      '<p class="hint full">'+(one ? 'Referencia <b>'+esc(one.referencia)+'</b>'+(one.fechaRetiro?' · retiro '+esc(fmt(one.fechaRetiro)):'') : '<b>'+chosen.length+'</b> referencias: '+chosen.map(function(r){ return esc(r.referencia); }).join(", "))+'</p>'+
+      '<div class="opts" id="e-opts">'+
+        opt("pendiente","p","Pendiente","Aún no se retira")+
+        opt("retirada","r","Carga retirada","Se retiró sin problemas")+
+        opt("inconveniente","w","Inconveniente","Hubo un problema")+
+      '</div>'+
+      '<label class="fl full"><span>Observación <span id="e-req" style="font-weight:500;color:var(--muted)"></span></span><textarea id="e-obs" maxlength="500" placeholder="Ej.: faltaron 2 bultos, la almacenadora no entregó, documento incompleto…">'+esc(obs0)+'</textarea></label>'+
+      '<p class="err hidden" id="e-err"></p>',
+      '<button class="btn plain" id="e-cancel" type="button">Cancelar</button><button class="btn" id="e-save" type="button">Guardar</button>');
+    function sync(){
+      cur = (document.querySelector('input[name="e-est"]:checked') || {}).value || cur;
+      Array.prototype.forEach.call(document.querySelectorAll("#e-opts .opt"), function(l){ l.classList.toggle("on", l.querySelector("input").checked); });
+      $("e-req").textContent = cur === "inconveniente" ? "(obligatoria)" : "(opcional)";
+    }
+    $("e-opts").addEventListener("change", sync); sync();
+    if(cur === "inconveniente") setTimeout(function(){ $("e-obs").focus(); }, 30);
+    $("e-cancel").onclick = closeModal;
+    $("e-save").onclick = function(){
+      var o = $("e-obs").value.trim();
+      if(cur === "inconveniente" && !o){ var er=$("e-err"); er.textContent = "Describe el inconveniente en la observación."; er.classList.remove("hidden"); $("e-obs").focus(); return; }
+      closeModal(); sel.clear();
+      setEstado(chosen.map(function(r){ return r.id; }), cur, o);
+    };
   }
 
   /* ---------- Unidades ---------- */
@@ -569,12 +657,13 @@ tr.total td{font-weight:700;background:var(--panel-2)}
     });
   }
   function filtered(){
-    var rows = baseFiltered().filter(function(r){ return F.estado==="all" || (F.estado==="d" ? !!r.descargado : !r.descargado); });
+    var MAPE = { p:"pendiente", r:"retirada", w:"inconveniente" };
+    var rows = baseFiltered().filter(function(r){ return F.estado==="all" || estadoDe(r) === MAPE[F.estado]; });
     var k = sortKey;
     return rows.sort(function(a,b){
       var va, vb;
       if(k==="transporte"){ va=(a.tipo||"~")+String(a.unidad||0).padStart(3,"0"); vb=(b.tipo||"~")+String(b.unidad||0).padStart(3,"0"); }
-      else if(k==="estado"){ va=a.descargado?1:0; vb=b.descargado?1:0; }
+      else if(k==="estado"){ var O={pendiente:0,inconveniente:1,retirada:2}; va=O[estadoDe(a)]; vb=O[estadoDe(b)]; }
       else { va=(a[k]||"").toString().toLowerCase(); vb=(b[k]||"").toString().toLowerCase(); }
       if(va===vb) return (a.referencia||"").localeCompare(b.referencia||"");
       if(va==="") return 1; if(vb==="") return -1;
@@ -591,7 +680,7 @@ tr.total td{font-weight:700;background:var(--panel-2)}
     if(!regs.length) return isAdmin() ? '<strong>Aún no hay registros</strong>Pulsa “+ Nuevo registro” para empezar.' : '<strong>Aún no hay registros</strong>';
     var dateOn = !F.todas && (F.desde || F.hasta);
     var base = baseFiltered().length;
-    if(base && F.estado!=="all") return '<strong>No hay referencias '+(F.estado==="p"?"pendientes":"descargadas")+' con estos filtros</strong>Hay '+base+' referencia(s) sin filtrar por estado.';
+    if(base && F.estado!=="all") return '<strong>No hay referencias '+({p:"pendientes",r:"con carga retirada",w:"con inconveniente"}[F.estado])+' con estos filtros</strong>Hay '+base+' referencia(s) sin filtrar por estado.';
     if(dateOn) return '<strong>No hay referencias para '+(F.desde===F.hasta?"el "+esc(fmt(F.desde)):"estas fechas")+'</strong><button class="btn sm ghost" type="button" data-allfechas style="margin-top:10px">Ver todas las fechas</button>';
     return '<strong>Sin resultados</strong>Ajusta los filtros.';
   }
@@ -600,7 +689,7 @@ tr.total td{font-weight:700;background:var(--panel-2)}
     $("count").textContent = "· " + rows.length;
     var head = '<thead><tr><th><input type="checkbox" class="chk" id="chk-all" aria-label="Seleccionar todo"></th>'+
       thS("embarque","Embarque")+thS("referencia","Referencia")+thS("almacenadora","Almacenadora")+thS("fechaDocs","Entrega docs.")+
-      thS("fechaRetiro","Fecha retiro")+thS("bodega","Bodega")+thS("transporte","Transporte")+thS("estado","Descarga en CD")+(admin?'<th></th>':'')+'</tr></thead>';
+      thS("fechaRetiro","Fecha retiro")+thS("bodega","Bodega")+thS("transporte","Transporte")+thS("estado","Estado de carga")+(admin?'<th></th>':'')+'</tr></thead>';
     if(!rows.length){
       var msg = emptyMsg();
       $("tbl").innerHTML = head + '<tbody><tr><td colspan="10"><div class="empty">'+msg+'</div></td></tr></tbody>';
@@ -608,14 +697,14 @@ tr.total td{font-weight:700;background:var(--panel-2)}
     } else {
       var acts = function(r){ return admin ? '<button class="icon-btn" data-edit="'+esc(r.id)+'" title="Editar" aria-label="Editar">✎</button><button class="icon-btn del" data-del="'+esc(r.id)+'" title="Eliminar" aria-label="Eliminar">✕</button>' : ''; };
       $("tbl").innerHTML = head + '<tbody>' + rows.map(function(r){
-        var cls = (r.descargado?"d":"")+(flash.has(r.id)?" flash":"");
+        var e0 = estadoDe(r), cls = (e0==="retirada"?"d":e0==="inconveniente"?"w":"")+(flash.has(r.id)?" flash":"");
         return '<tr class="'+cls+'"><td><input type="checkbox" class="chk" data-sel="'+esc(r.id)+'"'+(sel.has(r.id)?" checked":"")+' aria-label="Seleccionar '+esc(r.referencia)+'"></td>'+
           '<td>'+esc(r.embarque||"—")+'</td><td class="ref">'+esc(r.referencia)+'</td><td>'+esc(r.almacenadora||"—")+'</td>'+
           '<td>'+esc(fmt(r.fechaDocs))+'</td><td>'+esc(fmt(r.fechaRetiro))+'</td><td>'+esc(r.bodega||"—")+'</td><td>'+tagHtml(r)+'</td><td>'+stHtml(r)+'</td>'+
           (admin?'<td style="white-space:nowrap">'+acts(r)+'</td>':'')+'</tr>';
       }).join("") + '</tbody>';
       $("cards").innerHTML = rows.map(function(r){
-        var cls = (r.descargado?" d":"")+(flash.has(r.id)?" flash":"");
+        var e1 = estadoDe(r), cls = (e1==="retirada"?" d":e1==="inconveniente"?" w":"")+(flash.has(r.id)?" flash":"");
         return '<div class="rcard'+cls+'"><input type="checkbox" class="chk" data-sel="'+esc(r.id)+'"'+(sel.has(r.id)?" checked":"")+' aria-label="Seleccionar">'+
           '<div><div class="ref">'+esc(r.referencia)+'</div><div style="margin-top:2px">'+tagHtml(r)+'</div></div>'+
           '<div class="acts">'+acts(r)+'</div>'+
@@ -647,14 +736,14 @@ tr.total td{font-weight:700;background:var(--panel-2)}
       var m = {};
       rs.forEach(function(r){
         var k = keyFn(r) || "(Sin dato)";
-        var g = m[k] || (m[k] = { k:k, refs:0, d:0, cam:new Set(), cont:new Set(), sin:0 });
-        g.refs++; if(r.descargado) g.d++;
+        var g = m[k] || (m[k] = { k:k, refs:0, d:0, w:0, cam:new Set(), cont:new Set(), sin:0 });
+        g.refs++; var es = estadoDe(r); if(es==="retirada") g.d++; else if(es==="inconveniente") g.w++;
         var uk = unitKey(r);
         if(uk) (r.tipo==="camion" ? g.cam : g.cont).add(uk); else g.sin++;
       });
-      return Object.keys(m).map(function(k){ var g=m[k]; return { k:k, refs:g.refs, d:g.d, cam:g.cam.size, cont:g.cont.size, tot:g.cam.size+g.cont.size, sin:g.sin }; });
+      return Object.keys(m).map(function(k){ var g=m[k]; return { k:k, refs:g.refs, d:g.d, w:g.w, cam:g.cam.size, cont:g.cont.size, tot:g.cam.size+g.cont.size, sin:g.sin }; });
     }
-    var all = group(function(){ return "Total"; })[0] || { refs:0, d:0, cam:0, cont:0, tot:0, sin:0 };
+    var all = group(function(){ return "Total"; })[0] || { refs:0, d:0, w:0, cam:0, cont:0, tot:0, sin:0 };
     return {
       all: all,
       fecha: group(function(r){ return r.fechaRetiro; }).sort(function(a,b){ return a.k<b.k?1:-1; }),
@@ -667,15 +756,15 @@ tr.total td{font-weight:700;background:var(--panel-2)}
     return '<span class="pct"><span class="prog"><i style="width:'+p+'%"></i></span>'+g.d+'/'+g.refs+'</span>';
   }
   function statTable(rows, label, kind, total){
-    var head = '<thead><tr><th>'+label+'</th><th class="n">Referencias</th><th class="n">Camiones 8 ton</th><th class="n">Contenedores</th><th>Total unidades</th><th class="n">Descargadas en CD</th><th class="n">Sin transporte</th></tr></thead>';
-    if(!rows.length) return head + '<tbody><tr><td colspan="7"><div class="empty">Sin retiros en el periodo.</div></td></tr></tbody>';
-    var max = Math.max.apply(null, rows.map(function(g){ return g.tot; }).concat([1]));
+    var head = '<thead><tr><th>'+label+'</th><th class="n" title="Referencias">Ref.</th><th class="n" title="Camiones 8 ton">Cam.</th><th class="n" title="Contenedores">Cont.</th><th class="n" title="Total de unidades">Unid.</th><th class="n" title="Carga retirada">Retir.</th><th class="n" title="Con inconveniente">Inc.</th></tr></thead>';
+    if(!rows.length) return head + '<tbody><tr><td colspan="7"><div class="empty" style="padding:20px 8px">Sin retiros en el periodo.</div></td></tr></tbody>';
+    var inc = function(n){ return n ? '<b style="color:#C27C12">'+n+'</b>' : '—'; };
     var body = rows.map(function(g){
       var attr = g.k==="(Sin dato)" ? "" : ' data-goto-'+kind+'="'+esc(g.k)+'"';
-      return '<tr class="'+(attr?"click":"")+'"'+attr+'><td>'+esc(kind==="fecha"?fmt(g.k):g.k)+'</td><td class="n">'+g.refs+'</td><td class="n">'+g.cam+'</td><td class="n">'+g.cont+'</td>'+
-        '<td><span class="minibar" style="width:'+Math.max(4,Math.round(g.tot/max*80))+'px"></span><b>'+g.tot+'</b></td><td class="n">'+pctCell(g)+'</td><td class="n">'+(g.sin||"—")+'</td></tr>';
+      return '<tr class="'+(attr?"click":"")+'"'+attr+' title="Ver registros"><td>'+esc(kind==="fecha"?fmt(g.k):g.k)+'</td><td class="n">'+g.refs+'</td><td class="n">'+g.cam+'</td><td class="n">'+g.cont+'</td>'+
+        '<td class="n"><b>'+g.tot+'</b></td><td class="n">'+pctCell(g)+'</td><td class="n">'+inc(g.w)+'</td></tr>';
     }).join("");
-    if(total) body += '<tr class="total"><td>Total</td><td class="n">'+total.refs+'</td><td class="n">'+total.cam+'</td><td class="n">'+total.cont+'</td><td><b>'+total.tot+'</b></td><td class="n">'+pctCell(total)+'</td><td class="n">'+(total.sin||"—")+'</td></tr>';
+    if(total) body += '<tr class="total"><td>Total</td><td class="n">'+total.refs+'</td><td class="n">'+total.cam+'</td><td class="n">'+total.cont+'</td><td class="n">'+total.tot+'</td><td class="n">'+pctCell(total)+'</td><td class="n">'+inc(total.w)+'</td></tr>';
     return head + '<tbody>'+body+'</tbody>';
   }
   function renderChart(rows){
@@ -684,20 +773,22 @@ tr.total td{font-weight:700;background:var(--panel-2)}
     var max = Math.max.apply(null, data.map(function(g){ return g.tot; }).concat([1])), H = 130;
     $("chart").innerHTML = '<div class="bars">'+data.map(function(g){
       var h1 = Math.round(g.cam/max*H), h2 = Math.round(g.cont/max*H);
-      return '<button type="button" class="bcol" data-goto-fecha="'+esc(g.k)+'" data-tip="'+esc(fmt(g.k)+"|"+g.cam+"|"+g.cont+"|"+g.refs+"|"+g.d)+'" aria-label="'+esc(fmt(g.k))+': '+g.tot+' unidades">'+
+      return '<button type="button" class="bcol" data-goto-fecha="'+esc(g.k)+'" data-tip="'+esc(fmt(g.k)+"|"+g.cam+"|"+g.cont+"|"+g.refs+"|"+g.d+"|"+g.w)+'" aria-label="'+esc(fmt(g.k))+': '+g.tot+' unidades">'+
         '<span class="v">'+g.tot+'</span><span class="bstack" style="height:'+(h1+h2)+'px"><i class="c1" style="height:'+h1+'px"></i><i class="c2" style="height:'+h2+'px"></i></span></button>';
     }).join("")+'</div><div class="blab">'+data.map(function(g){ return '<span>'+esc(fmtShort(g.k))+'</span>'; }).join("")+'</div>';
   }
   function renderStats(){
     var s = statsData(), p = s.all.refs ? Math.round(s.all.d/s.all.refs*100) : 0;
     $("kpis").innerHTML =
-      '<div class="card kpi"><b>'+s.all.refs+'</b><span>Referencias retiradas</span></div>'+
+      '<div class="card kpi"><b>'+s.all.refs+'</b><span>Referencias</span></div>'+
       '<div class="card kpi red"><b>'+s.all.cam+'</b><span>Camiones 8 ton</span></div>'+
       '<div class="card kpi"><b>'+s.all.cont+'</b><span>Contenedores</span></div>'+
       '<div class="card kpi red"><b>'+s.all.tot+'</b><span>Total unidades</span></div>'+
-      '<div class="card kpi okk wide"><b>'+p+'%</b><span>Descargado en CD ('+s.all.d+' de '+s.all.refs+')</span><div class="prog"><i style="width:'+p+'%"></i></div></div>';
+      '<div class="card kpi okk wide"><b>'+p+'%</b><span>Carga retirada ('+s.all.d+' de '+s.all.refs+')</span><div class="prog"><i style="width:'+p+'%"></i></div></div>'+
+      '<div class="card kpi amb"><b>'+s.all.w+'</b><span>Con inconveniente</span></div>';
     renderChart(s.fecha);
-    $("t-fecha").innerHTML = statTable(s.fecha, "Fecha de retiro", "fecha", s.all);
+    $("t-fecha").innerHTML = statTable(s.fecha, "Fecha", "fecha", s.all);
+    $("sin-tr").textContent = s.all.sin ? s.all.sin + " ref. sin transporte" : "";
     $("t-alm").innerHTML = statTable(s.alm, "Almacenadora", "alm");
     $("t-bod").innerHTML = statTable(s.bod, "Bodega", "bod");
     Array.prototype.forEach.call(document.querySelectorAll("#qr button"), function(b){ b.classList.toggle("on", b.dataset.range===qRange); });
@@ -736,9 +827,10 @@ tr.total td{font-weight:700;background:var(--panel-2)}
         '<label class="fl">Unidad<select id="m-uni"></select></label>'+
         '<p class="hint" id="m-uhint"></p>'+
       '</fieldset>'+
-      '<fieldset class="fieldset'+(r.descargado?" okf":"")+'" id="m-dfs"><legend>Centro de distribución</legend>'+
-        '<label class="switch"><input type="checkbox" id="m-desc"'+(r.descargado?" checked":"")+'> Descargado en CD</label>'+
-        '<label class="fl">Fecha de descarga<input type="date" id="m-fdes" value="'+esc(r.fechaDescarga)+'"'+(r.descargado?"":" disabled")+'></label>'+
+      '<fieldset class="fieldset" id="m-dfs"><legend>Estado de la carga</legend>'+
+        '<label class="fl">Estado<select id="m-est"><option value="pendiente">Pendiente</option><option value="retirada">Carga retirada</option><option value="inconveniente">Inconveniente</option></select></label>'+
+        '<label class="fl">Fecha del estado<input type="date" id="m-fes" value="'+esc(fechaEst(r))+'"></label>'+
+        '<label class="fl full">Observación<textarea id="m-obs" maxlength="500" placeholder="Opcional; obligatoria si hay inconveniente">'+esc(r.observacion||"")+'</textarea></label>'+
       '</fieldset>'+
       '<p class="err hidden" id="m-err"></p>',
       '<button class="btn plain" id="m-cancel" type="button">Cancelar</button><button class="btn" id="m-save" type="button">Guardar</button>');
@@ -755,10 +847,14 @@ tr.total td{font-weight:700;background:var(--panel-2)}
       u.innerHTML = unitOptions(f, t, keep); uhint();
     }
     $("m-uni").onchange = uhint; $("m-tipo").onchange = syncUnit; $("m-fret").onchange = syncUnit; syncUnit();
-    $("m-desc").onchange = function(){
-      var on = this.checked; $("m-fdes").disabled = !on; $("m-dfs").classList.toggle("okf", on);
-      if(on && !$("m-fdes").value) $("m-fdes").value = today();
-    };
+    $("m-est").value = estadoDe(r);
+    function syncEst(){
+      var e = $("m-est").value; $("m-fes").disabled = e === "pendiente";
+      if(e !== "pendiente" && !$("m-fes").value) $("m-fes").value = today();
+      $("m-dfs").classList.toggle("okf", e === "retirada");
+      $("m-dfs").style.background = e === "inconveniente" ? "#FFF8EC" : ""; $("m-dfs").style.borderColor = e === "inconveniente" ? "#F0C98A" : "";
+    }
+    $("m-est").onchange = syncEst; syncEst();
     $("m-cancel").onclick = closeModal;
     $("m-ref").focus();
     $("m-save").onclick = function(){
@@ -767,11 +863,13 @@ tr.total td{font-weight:700;background:var(--panel-2)}
       if(tipo && !fret){ err.textContent="Indica la fecha de retiro para asignar transporte."; err.classList.remove("hidden"); return; }
       var uv=$("m-uni").value, unidad=null;
       if(tipo) unidad = uv==="new" ? unitsFor(fret,tipo).next : parseInt(uv,10);
-      var dsc = $("m-desc").checked;
+      var est = $("m-est").value, obs = $("m-obs").value.trim();
+      if(est === "inconveniente" && !obs){ err.textContent="Describe el inconveniente en la observación."; err.classList.remove("hidden"); $("m-obs").focus(); return; }
+      var fes = est === "pendiente" ? "" : ($("m-fes").value || today());
       var body = {
         embarque:$("m-emb").value.trim(), referencia:ref, almacenadora:$("m-alm").value.trim(), bodega:$("m-bod").value.trim(),
         fechaDocs:$("m-fdoc").value||"", fechaRetiro:fret||"", tipo:tipo||null, unidad:unidad,
-        descargado:dsc, fechaDescarga: dsc ? ($("m-fdes").value || today()) : "",
+        estado:est, observacion:obs, fechaEstado:fes, descargado: est === "retirada", fechaDescarga: est === "retirada" ? fes : "",
         creado:(rec && rec.creado) || new Date().toISOString(), actualizado:new Date().toISOString()
       };
       var btn = this; btn.disabled = true;
@@ -832,15 +930,15 @@ tr.total td{font-weight:700;background:var(--panel-2)}
     var s = statsData(), lines = [];
     function block(title, rows, isDate){
       lines.push(csvCell(title));
-      lines.push(["Grupo","Referencias","Camiones 8 ton","Contenedores","Total unidades","Descargadas en CD","Sin transporte"].join(","));
-      rows.forEach(function(g){ lines.push([csvCell(isDate?fmt(g.k):g.k), g.refs, g.cam, g.cont, g.tot, g.d, g.sin].join(",")); });
+      lines.push(["Grupo","Referencias","Camiones 8 ton","Contenedores","Total unidades","Carga retirada","Inconvenientes","Sin transporte"].join(","));
+      rows.forEach(function(g){ lines.push([csvCell(isDate?fmt(g.k):g.k), g.refs, g.cam, g.cont, g.tot, g.d, g.w, g.sin].join(",")); });
       lines.push("");
     }
     block("Por fecha de retiro", s.fecha, true); block("Por almacenadora", s.alm, false); block("Por bodega", s.bod, false);
     lines.push("Detalle de referencias");
-    lines.push(["Embarque","Referencia","Almacenadora","Fecha entrega documentación","Fecha retiro","Bodega","Transporte","Descargado en CD","Fecha descarga"].join(","));
+    lines.push(["Embarque","Referencia","Almacenadora","Fecha entrega documentación","Fecha retiro","Bodega","Transporte","Estado","Fecha del estado","Observación"].join(","));
     statsRows().forEach(function(r){
-      lines.push([r.embarque,r.referencia,r.almacenadora,fmt(r.fechaDocs),fmt(r.fechaRetiro),r.bodega,(r.tipo&&r.unidad)?unitLabel(r.tipo,r.unidad):"Sin asignar",r.descargado?"Sí":"No",r.fechaDescarga?fmt(r.fechaDescarga):""].map(csvCell).join(","));
+      lines.push([r.embarque,r.referencia,r.almacenadora,fmt(r.fechaDocs),fmt(r.fechaRetiro),r.bodega,(r.tipo&&r.unidad)?unitLabel(r.tipo,r.unidad):"Sin asignar",EST[estadoDe(r)],fechaEst(r)?fmt(fechaEst(r)):"",r.observacion||""].map(csvCell).join(","));
     });
     var blob = new Blob(["\ufeff"+lines.join("\n")], {type:"text/csv"});
     var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "estadisticas-retiros.csv";
@@ -868,8 +966,9 @@ tr.total td{font-weight:700;background:var(--panel-2)}
     applyFilters();
   }); });
   $("btn-assign").onclick = openAssign;
-  $("btn-markd").onclick = function(){ var ids=Array.from(sel); sel.clear(); setDescargado(ids, true); render(); };
-  $("btn-markp").onclick = function(){ var ids=Array.from(sel); sel.clear(); setDescargado(ids, false); render(); };
+  $("btn-markd").onclick = function(){ var ids=Array.from(sel); sel.clear(); setEstado(ids, "retirada"); render(); };
+  $("btn-marki").onclick = function(){ openEstado(Array.from(sel), "inconveniente"); };
+  $("btn-markp").onclick = function(){ var ids=Array.from(sel); sel.clear(); setEstado(ids, "pendiente", ""); render(); };
   $("btn-unsel").onclick = function(){ sel.clear(); render(); };
   $("s-from").onchange = function(){ qRange=""; render(); };
   $("s-to").onchange = function(){ qRange=""; render(); };
@@ -880,9 +979,11 @@ tr.total td{font-weight:700;background:var(--panel-2)}
     if(t.id==="chk-all"){ filtered().forEach(function(r){ if(t.checked) sel.add(r.id); else sel.delete(r.id); }); renderRecords(); return; }
     var s = t.getAttribute && t.getAttribute("data-sel");
     if(s){ if(t.checked) sel.add(s); else sel.delete(s); renderRecords(); return; }
-    var b = t.closest && t.closest("[data-edit],[data-del],[data-desc],[data-allfechas],th[data-sort]");
+    var b = t.closest && t.closest("[data-edit],[data-del],[data-ret],[data-inc],[data-est],[data-allfechas],th[data-sort]");
     if(!b) return;
-    if(b.dataset.desc){ var r0 = regs.find(function(x){ return x.id===b.dataset.desc; }); if(r0) setDescargado([r0.id], !r0.descargado); return; }
+    if(b.dataset.ret){ setEstado([b.dataset.ret], "retirada"); return; }
+    if(b.dataset.inc){ openEstado([b.dataset.inc], "inconveniente"); return; }
+    if(b.dataset.est){ openEstado([b.dataset.est]); return; }
     if(b.hasAttribute("data-allfechas")){ $("f-todas").checked = true; applyFilters(); return; }
     if(b.dataset.sort){ var k=b.dataset.sort; if(sortKey===k) sortDir=-sortDir; else { sortKey=k; sortDir=(k==="fechaRetiro"||k==="fechaDocs")?-1:1; } renderRecords(); return; }
     if(b.dataset.edit){ var r = regs.find(function(x){ return x.id===b.dataset.edit; }); if(r) openForm(r); return; }
@@ -917,7 +1018,7 @@ tr.total td{font-weight:700;background:var(--panel-2)}
     var b = e.target.closest(".bcol"); if(!b) return;
     var p = b.dataset.tip.split("|");
     hideTip(); tip = document.createElement("div"); tip.className="tip";
-    tip.textContent = p[0]+" — "+p[1]+" camión(es), "+p[2]+" contenedor(es) · "+p[3]+" ref., "+p[4]+" descargadas";
+    tip.textContent = p[0]+" — "+p[1]+" camión(es), "+p[2]+" contenedor(es) · "+p[3]+" ref., "+p[4]+" retiradas, "+p[5]+" con inconveniente";
     document.body.appendChild(tip);
     var r = b.getBoundingClientRect(), w = tip.offsetWidth;
     tip.style.left = Math.max(8, Math.min(window.innerWidth-w-8, r.left + r.width/2 - w/2))+"px";
