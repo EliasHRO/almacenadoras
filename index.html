@@ -191,7 +191,9 @@ textarea:focus{border-color:var(--red);outline:none;box-shadow:0 0 0 3px var(--r
 
 /* Registros agrupados por responsable */
 .lbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 2px 10px}
-.lbar h2{margin:0;font-size:14px;font-weight:700;margin-right:auto}
+.lcounts{display:flex;align-items:baseline;gap:22px;margin-right:auto;flex-wrap:wrap}
+.lbar h2{margin:0;font-size:14px;font-weight:700}
+.lbar h2 small{font-size:11.5px;font-weight:500;color:var(--muted)}
 .lbar h2 span{color:var(--muted);font-weight:500}
 .grp{margin-bottom:12px;overflow:hidden}
 .grp-h{width:100%;appearance:none;border:0;background:var(--panel);display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;text-align:left;font:inherit;color:inherit;flex-wrap:wrap}
@@ -391,7 +393,7 @@ table.ct .pct .prog{width:28px}
     </div>
 
     <div class="lbar">
-      <h2>Registros <span id="count"></span></h2>
+      <div class="lcounts"><h2>Referencias <span id="count"></span></h2><h2>Equipos <span id="count-eq"></span> <small id="count-eq-d"></small></h2></div>
       <div class="legend"><span><i class="sw d"></i>Carga retirada</span><span><i class="sw w"></i>Inconveniente</span><span><i class="sw"></i>Pendiente</span></div>
       <button class="btn plain sm" id="btn-expand" type="button">Contraer todo</button>
       <button class="btn admin-only" id="btn-new" type="button">+ Nuevo registro</button>
@@ -757,6 +759,10 @@ table.ct .pct .prog{width:28px}
   function renderRecords(){
     var rows = filtered(), admin = isAdmin(), box = $("groups");
     $("count").textContent = "· " + rows.length;
+    var eqCam = new Set(), eqCont = new Set();
+    rows.forEach(function(r){ var uk = unitKey(r); if(uk) (r.tipo === "camion" ? eqCam : eqCont).add(uk); });
+    $("count-eq").textContent = "· " + (eqCam.size + eqCont.size);
+    $("count-eq-d").textContent = (eqCam.size || eqCont.size) ? "(" + eqCam.size + (eqCam.size===1?" camión":" camiones") + " · " + eqCont.size + (eqCont.size===1?" contenedor":" contenedores") + ")" : "";
     if(!rows.length){
       box.innerHTML = '<div class="card"><div class="empty">'+emptyMsg()+'</div></div>';
       $("btn-expand").classList.add("hidden");
