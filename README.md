@@ -5,7 +5,8 @@ confirmación de descarga en el Centro de Distribución y estadísticas consolid
 Cloudflare Worker + base de datos D1 compartida (se actualiza cada 15 segundos).
 
 ## Archivos
-- `worker.js`: la aplicación completa (página + API)
+- `index.html`: la página (diseño, textos, pantallas). Edita este archivo para cambiar la apariencia.
+- `worker.js`: el servidor (API, permisos y base de datos)
 - `wrangler.jsonc`: configuración del Worker y de la base D1
 - `schema.sql`: tabla de la base de datos (ya ejecutada en la consola de D1)
 
@@ -36,3 +37,8 @@ Cada commit a `main` se publica solo en 1–2 minutos. Los datos no se borran.
 
 ## Respaldo
 Cloudflare → D1 → control-retiros-db → Consola → `SELECT * FROM registros;`
+
+## Cómo actualizar la página
+1. En GitHub, abre `index.html` → lápiz (Edit) → haz el cambio, o súbelo de nuevo con Add file → Upload files.
+2. Commit changes.
+3. Cloudflare publica la nueva versión sola en 1–2 minutos.
