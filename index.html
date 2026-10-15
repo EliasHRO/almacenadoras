@@ -234,14 +234,14 @@ tr.total td{font-weight:700;background:var(--panel-2)}
       <svg width="28" height="28" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="8" fill="#C8102E"/><path d="M6 21V11h13v10M19 14h5l4 4v3h-9" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/><circle cx="11" cy="23" r="2.4" fill="#fff"/><circle cx="24" cy="23" r="2.4" fill="#fff"/></svg>
       <h1>Control de Retiros</h1>
     </div>
-    <p class="sub">Ingresa tu nombre y la clave asignada</p>
+    <p class="sub">Acceso de administrador</p>
     <form id="l-form" autocomplete="on">
       <label class="fl">Nombre<input type="text" id="l-nom" placeholder="Tu nombre" autocomplete="name" required></label>
       <label class="fl">Clave<input type="password" id="l-clave" placeholder="Clave" autocomplete="current-password" required></label>
       <p class="err hidden" id="l-err"></p>
       <button class="btn" type="submit" id="l-btn">Entrar</button>
     </form>
-    <p class="foot">La clave la entrega el administrador.</p>
+    <p class="foot"><button class="link" type="button" id="l-back">← Volver sin ingresar</button></p>
   </div>
 </section>
 
@@ -260,7 +260,8 @@ tr.total td{font-weight:700;background:var(--panel-2)}
     <div class="who">
       <span class="sync" id="sync"><i></i><span>Conectando…</span></span>
       <span class="user"><span class="av" id="u-av">?</span><span id="u-nom"></span><small id="u-rol"></small></span>
-      <button class="link" type="button" id="btn-out">Salir</button>
+      <button class="link" type="button" id="btn-in">Ingresar como administrador</button>
+      <button class="link hidden" type="button" id="btn-out">Salir</button>
     </div>
   </div>
 </header>
@@ -383,7 +384,7 @@ tr.total td{font-weight:700;background:var(--panel-2)}
   function setSync(text, on){ var s=$("sync"); s.querySelector("span").textContent=text; s.classList.toggle("on", !!on); }
 
   /* ---------- Sesión ---------- */
-  function loadSes(){ try{ var s = JSON.parse(localStorage.getItem(SES_KEY) || "null"); if(s && s.nombre && s.clave) ses = s; }catch(e){} }
+  function loadSes(){ try{ var s = JSON.parse(localStorage.getItem(SES_KEY) || "null"); if(s && s.nombre && s.clave && s.rol === "admin") ses = s; }catch(e){} }
   function saveSes(){ try{ localStorage.setItem(SES_KEY, JSON.stringify(ses)); }catch(e){} }
   function showLogin(msg){
     $("app").classList.add("hidden"); $("login").classList.remove("hidden");
@@ -391,13 +392,14 @@ tr.total td{font-weight:700;background:var(--panel-2)}
     if(ses && ses.nombre) $("l-nom").value = ses.nombre;
     setTimeout(function(){ ($("l-nom").value ? $("l-clave") : $("l-nom")).focus(); }, 30);
   }
+  function guestSes(){ return { nombre:"Transportista", clave:"", rol:"transportista" }; }
   function logout(msg){
-    var nombre = ses && ses.nombre;
-    ses = null; try{ localStorage.removeItem(SES_KEY); }catch(e){}
-    if(pollTimer){ clearInterval(pollTimer); pollTimer = null; }
-    regs = []; sel.clear(); closeModal();
-    $("l-clave").value = ""; if(nombre) $("l-nom").value = nombre;
-    showLogin(msg);
+    var nombre = ses && ses.rol === "admin" && ses.nombre;
+    try{ localStorage.removeItem(SES_KEY); }catch(e){}
+    if(nombre) $("l-nom").value = nombre;
+    $("l-clave").value = ""; sel.clear(); closeModal();
+    ses = guestSes(); startApp();
+    if(msg) toast(msg);
   }
   async function api(method, path, body){
     var h = { "X-Clave": ses ? ses.clave : "", "X-Usuario": ses ? encodeURIComponent(ses.nombre) : "" };
@@ -407,7 +409,7 @@ tr.total td{font-weight:700;background:var(--panel-2)}
       var msg = "Error " + res.status;
       try{ var j = await res.json(); if(j && j.error) msg = j.error; }catch(e){}
       var err = new Error(msg); err.status = res.status;
-      if(res.status === 401 && path !== "/api/sesion") logout("Tu clave ya no es válida. Ingresa de nuevo.");
+      if(res.status === 401 && path !== "/api/sesion") logout("La clave de administrador cambió. Ingresa de nuevo.");
       throw err;
     }
     return res.json();
@@ -417,18 +419,22 @@ tr.total td{font-weight:700;background:var(--panel-2)}
     var n = $("l-nom").value.trim(), c = $("l-clave").value, er = $("l-err"), b = $("l-btn");
     if(!n || !c){ er.textContent = "Escribe tu nombre y la clave."; er.classList.remove("hidden"); return; }
     b.disabled = true; b.textContent = "Verificando…";
+    var prevSes = ses;
     ses = { nombre: n.slice(0,40), clave: c };
     try{
       var r = await api("GET", "/api/sesion");
-      ses.rol = r.rol; saveSes(); startApp();
+      if(r.rol !== "admin"){ var x = new Error("x"); x.status = 401; throw x; }
+      ses.rol = "admin"; saveSes(); $("l-clave").value = ""; startApp(); toast("Sesión de administrador iniciada");
     }catch(ex){
-      ses = null;
+      ses = prevSes;
       er.textContent = ex.status === 401 ? "Clave incorrecta." : (ex.status === 500 ? ex.message : "No se pudo conectar con el servidor.");
       er.classList.remove("hidden");
     }
     b.disabled = false; b.textContent = "Entrar";
   });
-  $("btn-out").onclick = function(){ logout(); };
+  $("btn-out").onclick = function(){ logout("Sesión de administrador cerrada"); };
+  $("btn-in").onclick = function(){ showLogin(); };
+  $("l-back").onclick = function(){ $("login").classList.add("hidden"); $("app").classList.remove("hidden"); };
 
   function startApp(){
     $("login").classList.add("hidden"); $("app").classList.remove("hidden");
@@ -436,7 +442,9 @@ tr.total td{font-weight:700;background:var(--panel-2)}
     document.body.classList.toggle("rol-transportista", !isAdmin());
     $("u-av").textContent = (ses.nombre[0] || "?").toUpperCase();
     $("u-nom").textContent = ses.nombre;
-    $("u-rol").textContent = "· " + (ROL[ses.rol] || ses.rol);
+    $("u-rol").textContent = isAdmin() ? "· Administrador" : "";
+    $("btn-in").classList.toggle("hidden", isAdmin());
+    $("btn-out").classList.toggle("hidden", !isAdmin());
     resetFilters(true);
     load(false);
     if(pollTimer) clearInterval(pollTimer);
@@ -922,10 +930,14 @@ tr.total td{font-weight:700;background:var(--panel-2)}
   loadSes();
   if(ses){
     $("l-nom").value = ses.nombre;
-    api("GET", "/api/sesion").then(function(r){ ses.rol = r.rol; saveSes(); startApp(); })
-      .catch(function(e){ if(e.status === 401){ var n = ses.nombre; ses = null; try{ localStorage.removeItem(SES_KEY); }catch(x){} $("l-nom").value = n; showLogin("Tu clave cambió. Ingresa de nuevo."); } else { ses.rol ? startApp() : showLogin("No se pudo conectar con el servidor."); } });
+    api("GET", "/api/sesion").then(function(r){
+      if(r.rol === "admin"){ ses.rol = "admin"; saveSes(); startApp(); } else logout();
+    }).catch(function(e){
+      if(e.status === 401) logout("La clave de administrador cambió. Ingresa de nuevo.");
+      else { ses.rol = "admin"; startApp(); }
+    });
   } else {
-    showLogin();
+    ses = guestSes(); startApp();
   }
 })();
 </script>

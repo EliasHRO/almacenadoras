@@ -8,9 +8,9 @@ import HTML from "./index.html";
 // PUT    /api/registros/:id    -> admin: crea/edita todo · transportista: solo el estado de descarga
 // DELETE /api/registros/:id    -> solo admin
 //
-// Claves (Cloudflare → Worker → Configuración → Variables y secretos, tipo "Secreto"):
-//   ADMIN_CLAVE           clave del administrador
-//   TRANSPORTISTA_CLAVE   clave de los transportistas
+// Quien abre la página sin clave entra como TRANSPORTISTA (ver todo + marcar descarga).
+// Clave del administrador (Cloudflare → Worker → Configuración → Variables y secretos, tipo "Secreto"):
+//   ADMIN_CLAVE
 
 const CAMPOS_TEXTO = ["embarque", "referencia", "almacenadora", "bodega", "fechaDocs", "fechaRetiro", "fechaDescarga", "creado", "actualizado"];
 const FECHA = /^\d{4}-\d{2}-\d{2}$/;
@@ -34,13 +34,13 @@ function iguales(a, b) {
 
 function rolDe(request, env) {
   const clave = request.headers.get("X-Clave") || "";
-  if (!clave) return null;
-  if (env.ADMIN_CLAVE && iguales(clave, env.ADMIN_CLAVE)) return "admin";
-  if (env.TRANSPORTISTA_CLAVE && iguales(clave, env.TRANSPORTISTA_CLAVE)) return "transportista";
-  return null;
+  if (!clave) return "transportista";           // sin clave: transportista
+  if (iguales(clave, env.ADMIN_CLAVE)) return "admin";
+  return null;                                  // clave enviada pero incorrecta
 }
 
 function usuarioDe(request, rol) {
+  if (rol !== "admin") return "Transportista";
   let n = request.headers.get("X-Usuario") || "";
   try { n = decodeURIComponent(n); } catch { n = ""; }
   n = n.replace(/[^\p{L}\p{N} ._-]/gu, "").trim().slice(0, 40) || "Sin nombre";
@@ -80,8 +80,8 @@ export default {
       return new Response(HTML, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-cache" } });
     }
 
-    if (!env.ADMIN_CLAVE || !env.TRANSPORTISTA_CLAVE) {
-      return json({ error: "Faltan configurar ADMIN_CLAVE y TRANSPORTISTA_CLAVE en Cloudflare." }, 500);
+    if (!env.ADMIN_CLAVE) {
+      return json({ error: "Falta configurar ADMIN_CLAVE en Cloudflare." }, 500);
     }
 
     const rol = rolDe(request, env);

@@ -14,20 +14,19 @@ Cloudflare Worker + base de datos D1 compartida (se actualiza cada 15 segundos).
 | Rol | Puede |
 |---|---|
 | Administrador | Crear, editar y eliminar registros, asignar transporte, marcar descargas, ver estadísticas |
-| Transportista | Ver registros y estadísticas, y marcar/desmarcar "Descargado en CD" |
+| Transportista (cualquiera que abra la URL, sin login) | Ver registros y estadísticas, y marcar/desmarcar "Descargado en CD" |
 
 Los permisos se validan en el servidor: aunque alguien modifique la página, el transportista
 no puede crear, editar ni borrar.
 
-## Claves (obligatorio)
+## Clave del administrador (obligatorio)
 Cloudflare → Workers & Pages → control-retiros → Configuración → Variables y secretos → Agregar:
-- `ADMIN_CLAVE` (tipo Secreto): clave del administrador
-- `TRANSPORTISTA_CLAVE` (tipo Secreto): clave de los transportistas
+- `ADMIN_CLAVE` (tipo Secreto): clave del administrador (mínimo 12 caracteres)
 
-Usa claves largas (mínimo 12 caracteres). Para cambiar una clave, edítala ahí:
-quien tenga la clave anterior deberá ingresar de nuevo.
+El administrador entra con el botón "Ingresar como administrador" (arriba a la derecha).
+Para cambiar la clave, edítala ahí: la sesión anterior se cerrará sola.
 
-Cada registro guarda quién hizo el último cambio (nombre y rol).
+Cada registro guarda quién hizo el último cambio (nombre del administrador o "Transportista").
 
 ## Publicación
 Cloudflare → Workers & Pages → control-retiros, conectado a este repositorio.
