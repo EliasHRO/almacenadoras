@@ -1,30 +1,38 @@
 # Control de Retiros
 
-Registro de retiros de carga (embarque, referencia, almacenadora, bodega, fechas),
-agrupación de referencias por camión de 8 ton o contenedor, confirmación de descarga
-en el Centro de Distribución y estadísticas consolidadas.
-
-Funciona como un Cloudflare Worker con base de datos D1 compartida:
-todas las personas que abren la URL ven y editan los mismos registros
-(la página se actualiza sola cada 15 segundos).
+Registro de retiros de carga, agrupación de referencias por camión de 8 ton o contenedor,
+confirmación de descarga en el Centro de Distribución y estadísticas consolidadas.
+Cloudflare Worker + base de datos D1 compartida (se actualiza cada 15 segundos).
 
 ## Archivos
-- `worker.js`: la aplicación completa (página + API `/api/registros`)
+- `worker.js`: la aplicación completa (página + API)
 - `wrangler.jsonc`: configuración del Worker y de la base D1
-- `schema.sql`: tabla de la base de datos (se ejecuta una sola vez en la consola de D1)
+- `schema.sql`: tabla de la base de datos (ya ejecutada en la consola de D1)
+
+## Roles
+| Rol | Puede |
+|---|---|
+| Administrador | Crear, editar y eliminar registros, asignar transporte, marcar descargas, ver estadísticas |
+| Transportista | Ver registros y estadísticas, y marcar/desmarcar "Descargado en CD" |
+
+Los permisos se validan en el servidor: aunque alguien modifique la página, el transportista
+no puede crear, editar ni borrar.
+
+## Claves (obligatorio)
+Cloudflare → Workers & Pages → control-retiros → Configuración → Variables y secretos → Agregar:
+- `ADMIN_CLAVE` (tipo Secreto): clave del administrador
+- `TRANSPORTISTA_CLAVE` (tipo Secreto): clave de los transportistas
+
+Usa claves largas (mínimo 12 caracteres). Para cambiar una clave, edítala ahí:
+quien tenga la clave anterior deberá ingresar de nuevo.
+
+Cada registro guarda quién hizo el último cambio (nombre y rol).
 
 ## Publicación
-Cloudflare → Workers & Pages → proyecto `control-retiros`, conectado a este repositorio.
+Cloudflare → Workers & Pages → control-retiros, conectado a este repositorio.
 - Comando de compilación: (vacío)
 - Comando de implementación: `npx wrangler deploy`
-
-Cada commit a la rama `main` se publica automáticamente en 1–2 minutos.
-Los datos viven en D1, así que actualizar el código no los borra.
-
-## Acceso
-Proteger la URL con Cloudflare Access (Zero Trust, gratis hasta 50 usuarios):
-Worker → Configuración → Dominios y rutas → activar Cloudflare Access en la URL workers.dev,
-y en la política permitir solo los correos del equipo.
+Cada commit a `main` se publica solo en 1–2 minutos. Los datos no se borran.
 
 ## Respaldo
 Cloudflare → D1 → control-retiros-db → Consola → `SELECT * FROM registros;`
