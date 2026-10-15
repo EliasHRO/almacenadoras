@@ -236,8 +236,8 @@ tr.total td{font-weight:700;background:var(--panel-2)}
     </div>
     <p class="sub">Acceso de administrador</p>
     <form id="l-form" autocomplete="on">
-      <label class="fl">Nombre<input type="text" id="l-nom" placeholder="Tu nombre" autocomplete="name" required></label>
-      <label class="fl">Clave<input type="password" id="l-clave" placeholder="Clave" autocomplete="current-password" required></label>
+      <label class="fl">Usuario<input type="text" id="l-nom" placeholder="Usuario" autocomplete="username" autocapitalize="off" spellcheck="false" required></label>
+      <label class="fl">Contraseña<input type="password" id="l-clave" placeholder="Contraseña" autocomplete="current-password" required></label>
       <p class="err hidden" id="l-err"></p>
       <button class="btn" type="submit" id="l-btn">Entrar</button>
     </form>
@@ -409,7 +409,7 @@ tr.total td{font-weight:700;background:var(--panel-2)}
       var msg = "Error " + res.status;
       try{ var j = await res.json(); if(j && j.error) msg = j.error; }catch(e){}
       var err = new Error(msg); err.status = res.status;
-      if(res.status === 401 && path !== "/api/sesion") logout("La clave de administrador cambió. Ingresa de nuevo.");
+      if(res.status === 401 && path !== "/api/sesion") logout("Tu sesión de administrador venció. Ingresa de nuevo.");
       throw err;
     }
     return res.json();
@@ -417,7 +417,7 @@ tr.total td{font-weight:700;background:var(--panel-2)}
   $("l-form").addEventListener("submit", async function(e){
     e.preventDefault();
     var n = $("l-nom").value.trim(), c = $("l-clave").value, er = $("l-err"), b = $("l-btn");
-    if(!n || !c){ er.textContent = "Escribe tu nombre y la clave."; er.classList.remove("hidden"); return; }
+    if(!n || !c){ er.textContent = "Escribe tu usuario y contraseña."; er.classList.remove("hidden"); return; }
     b.disabled = true; b.textContent = "Verificando…";
     var prevSes = ses;
     ses = { nombre: n.slice(0,40), clave: c };
@@ -427,7 +427,7 @@ tr.total td{font-weight:700;background:var(--panel-2)}
       ses.rol = "admin"; saveSes(); $("l-clave").value = ""; startApp(); toast("Sesión de administrador iniciada");
     }catch(ex){
       ses = prevSes;
-      er.textContent = ex.status === 401 ? "Clave incorrecta." : (ex.status === 500 ? ex.message : "No se pudo conectar con el servidor.");
+      er.textContent = ex.status === 401 ? "Usuario o contraseña incorrectos." : (ex.status === 500 ? ex.message : "No se pudo conectar con el servidor.");
       er.classList.remove("hidden");
     }
     b.disabled = false; b.textContent = "Entrar";
@@ -933,7 +933,7 @@ tr.total td{font-weight:700;background:var(--panel-2)}
     api("GET", "/api/sesion").then(function(r){
       if(r.rol === "admin"){ ses.rol = "admin"; saveSes(); startApp(); } else logout();
     }).catch(function(e){
-      if(e.status === 401) logout("La clave de administrador cambió. Ingresa de nuevo.");
+      if(e.status === 401) logout("Tu sesión de administrador venció. Ingresa de nuevo.");
       else { ses.rol = "admin"; startApp(); }
     });
   } else {

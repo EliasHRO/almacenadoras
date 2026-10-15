@@ -19,14 +19,13 @@ Cloudflare Worker + base de datos D1 compartida (se actualiza cada 15 segundos).
 Los permisos se validan en el servidor: aunque alguien modifique la página, el transportista
 no puede crear, editar ni borrar.
 
-## Clave del administrador (obligatorio)
-Cloudflare → Workers & Pages → control-retiros → Configuración → Variables y secretos → Agregar:
-- `ADMIN_CLAVE` (tipo Secreto): clave del administrador (mínimo 12 caracteres)
+## Acceso del administrador
+Botón "Ingresar como administrador" (arriba a la derecha), con el usuario y la contraseña
+definidos en `worker.js` (ADMIN_USUARIO / ADMIN_HASH).
+La contraseña no está escrita en el código: solo su huella SHA-256.
+Para cambiarla, reemplaza ADMIN_HASH por la huella de la nueva contraseña.
 
-El administrador entra con el botón "Ingresar como administrador" (arriba a la derecha).
-Para cambiar la clave, edítala ahí: la sesión anterior se cerrará sola.
-
-Cada registro guarda quién hizo el último cambio (nombre del administrador o "Transportista").
+Cada registro guarda quién hizo el último cambio (usuario administrador o "Transportista").
 
 ## Publicación
 Cloudflare → Workers & Pages → control-retiros, conectado a este repositorio.

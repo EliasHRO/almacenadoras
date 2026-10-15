@@ -9,8 +9,13 @@ import HTML from "./index.html";
 // DELETE /api/registros/:id    -> solo admin
 //
 // Quien abre la página sin clave entra como TRANSPORTISTA (ver todo + marcar descarga).
-// Clave del administrador (Cloudflare → Worker → Configuración → Variables y secretos, tipo "Secreto"):
-//   ADMIN_CLAVE
+// El administrador entra con usuario y contraseña (definidos abajo).
+
+// ---------- Acceso del administrador ----------
+// La contraseña NO se guarda en texto: solo su huella SHA-256.
+// Para cambiarla, pide la nueva huella o calcula: SHA-256 de "control-retiros:" + contraseña.
+const ADMIN_USUARIO = "Torre2026";
+const ADMIN_HASH = "26247fb9aee567ff3cac049b0fee2a5e8df1dc8d3c15e5078c665193ace7b4cb";
 
 const CAMPOS_TEXTO = ["embarque", "referencia", "almacenadora", "bodega", "fechaDocs", "fechaRetiro", "fechaDescarga", "creado", "actualizado"];
 const FECHA = /^\d{4}-\d{2}-\d{2}$/;
@@ -32,19 +37,23 @@ function iguales(a, b) {
   return diff === 0;
 }
 
-function rolDe(request, env) {
-  const clave = request.headers.get("X-Clave") || "";
-  if (!clave) return "transportista";           // sin clave: transportista
-  if (iguales(clave, env.ADMIN_CLAVE)) return "admin";
-  return null;                                  // clave enviada pero incorrecta
+async function huella(texto) {
+  const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("control-retiros:" + texto));
+  return [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-function usuarioDe(request, rol) {
-  if (rol !== "admin") return "Transportista";
-  let n = request.headers.get("X-Usuario") || "";
-  try { n = decodeURIComponent(n); } catch { n = ""; }
-  n = n.replace(/[^\p{L}\p{N} ._-]/gu, "").trim().slice(0, 40) || "Sin nombre";
-  return `${n} (${rol})`;
+async function rolDe(request) {
+  const clave = request.headers.get("X-Clave") || "";
+  if (!clave) return "transportista";           // sin contraseña: transportista
+  let usuario = request.headers.get("X-Usuario") || "";
+  try { usuario = decodeURIComponent(usuario).trim(); } catch { usuario = ""; }
+  const okUsuario = iguales(usuario.toLowerCase(), ADMIN_USUARIO.toLowerCase());
+  const okClave = iguales(await huella(clave), ADMIN_HASH);
+  return okUsuario && okClave ? "admin" : null; // datos enviados pero incorrectos
+}
+
+function usuarioDe(rol) {
+  return rol === "admin" ? ADMIN_USUARIO + " (admin)" : "Transportista";
 }
 
 function limpiar(body) {
@@ -80,12 +89,8 @@ export default {
       return new Response(HTML, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-cache" } });
     }
 
-    if (!env.ADMIN_CLAVE) {
-      return json({ error: "Falta configurar ADMIN_CLAVE en Cloudflare." }, 500);
-    }
-
-    const rol = rolDe(request, env);
-    if (!rol) return json({ error: "Clave incorrecta" }, 401);
+    const rol = await rolDe(request);
+    if (!rol) return json({ error: "Usuario o contraseña incorrectos" }, 401);
 
     if (url.pathname === "/api/sesion" && request.method === "GET") {
       return json({ rol });
@@ -96,7 +101,7 @@ export default {
     const partes = url.pathname.split("/").filter(Boolean); // ["api","registros",id?]
     let id = null;
     try { id = partes[2] ? decodeURIComponent(partes[2]) : null; } catch { return json({ error: "Identificador inválido" }, 400); }
-    const usuario = usuarioDe(request, rol);
+    const usuario = usuarioDe(rol);
 
     try {
       if (request.method === "GET" && !id) {
